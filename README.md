@@ -66,3 +66,9 @@ FAILED (errors=1)
 ```
 
 #####  commit: c9212337d14d077373614241ac03318aee4de27f
+
+在本地调试后发现， 若字幕文件或音轨文件存在， 则会有交互提示：是否删除文件， 如果不输入y 或 n， 就会一直等在哪里
+``` 
+运行的时候， 如果字幕文件或者音轨文件存在， 会提示：已提取音轨: F:\code\video-subtitle\test_jpn.eac3\test_jpn.eac3.rwrite? [y/N] Not overwriting - exiting 。 去掉这个提示，让他自动覆盖
+
+```

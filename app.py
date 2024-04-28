@@ -43,7 +43,7 @@ def extract_audio_subtitle(input_file, timeout):
         # 提取音轨并显示进度
         for audio in audio_list:
             output_audio = os.path.join(input_dir, f"{input_name}_{audio['language']}.{audio['codec']}")
-            command_extract_audio = ['ffmpeg', '-i', input_file, '-map', f"0:{audio['index']}", '-c', 'copy', output_audio]
+            command_extract_audio = ['ffmpeg', '-i', input_file, '-map', f"0:{audio['index']}", '-c', 'copy', '-nostats', '-loglevel', '0', '-y', output_audio]  # Add -y option
             try:
                 # 使用subprocess.Popen获取实时输出
                 process = subprocess.Popen(command_extract_audio, stderr=subprocess.PIPE)
@@ -65,7 +65,7 @@ def extract_audio_subtitle(input_file, timeout):
             output_subtitle_ass = os.path.join(input_dir, f"{input_name}_{subtitle['language']}.ass")
 
             # 尝试使用srt格式提取字幕
-            command_extract_subtitle_srt = ['ffmpeg', '-i', input_file, '-map', f"0:{subtitle['index']}", '-c', 'srt', output_subtitle_srt]
+            command_extract_subtitle_srt = ['ffmpeg', '-i', input_file, '-map', f"0:{subtitle['index']}", '-c', 'srt', '-nostats', '-loglevel', '0', '-y', output_subtitle_srt]
             try:
                 process = subprocess.Popen(command_extract_subtitle_srt, stderr=subprocess.PIPE)
                 while True:
@@ -82,7 +82,7 @@ def extract_audio_subtitle(input_file, timeout):
                 print("错误信息:", str(e))
 
             # 如果srt格式提取失败,尝试使用ass格式提取字幕
-            command_extract_subtitle_ass = ['ffmpeg', '-i', input_file, '-map', f"0:{subtitle['index']}", '-c', 'ass', output_subtitle_ass]
+            command_extract_subtitle_ass = ['ffmpeg', '-i', input_file, '-map', f"0:{subtitle['index']}", '-c', 'ass', '-nostats', '-loglevel', '0', '-y', output_subtitle_ass]
             try:
                 process = subprocess.Popen(command_extract_subtitle_ass, stderr=subprocess.PIPE)
                 while True:

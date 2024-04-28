@@ -22,30 +22,44 @@ def extract_audio_subtitle(input_file, timeout):
     input_dir = os.path.dirname(os.path.abspath(input_file))
     input_name = os.path.splitext(os.path.basename(input_file))[0]
 
+    # 获取音轨和字幕信息
     command_info = ['ffprobe', '-v', 'quiet', '-print_format', 'json', '-show_streams', input_file]
-
     try:
-        # 运行命令并捕获输出
         info_result = subprocess.run(command_info, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # 解析音轨和字幕信息
         info = json.loads(info_result.stdout.decode())
         audio_list = parse_audio_info(info)
         subtitle_list = parse_subtitle_info(info)
 
-        print("开始提取音轨和字幕...")
+        # 打印文件中存在的音轨和字幕信息
+        print("文件中存在的音轨:")
+        for audio in audio_list:
+            print(f"- 语言: {audio['language']}, 编解码器: {audio['codec']}")
+        print("\n文件中存在的字幕:")
+        for subtitle in subtitle_list:
+            print(f"- 语言: {subtitle['language']}, 编解码器: {subtitle['codec']}")
 
-        # 提取音轨并按语言存储到同级目录
+        print("\n开始提取音轨和字幕...")
+
+        # 提取音轨并显示进度
         for audio in audio_list:
             output_audio = os.path.join(input_dir, f"{input_name}_{audio['language']}.{audio['codec']}")
             command_extract_audio = ['ffmpeg', '-i', input_file, '-map', f"0:{audio['index']}", '-c', 'copy', output_audio]
             try:
-                subprocess.run(command_extract_audio, check=True, stderr=subprocess.PIPE, timeout=timeout)
+                # 使用subprocess.Popen获取实时输出
+                process = subprocess.Popen(command_extract_audio, stderr=subprocess.PIPE)
+                while True:
+                    output = process.stderr.readline().decode().strip()
+                    if output == '' and process.poll() is not None:
+                        break
+                    if output:
+                        print(output, end='\r', flush=True)  # 实时打印进度
+                process.wait(timeout=timeout)  # 设置超时
                 print(f"已提取音轨: {output_audio}")
             except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
                 print(f"提取音轨失败: {output_audio}")
                 print("错误信息:", str(e))
 
-        # 提取字幕并按语言存储到同级目录
+        # 提取字幕并显示进度
         for subtitle in subtitle_list:
             output_subtitle_srt = os.path.join(input_dir, f"{input_name}_{subtitle['language']}.srt")
             output_subtitle_ass = os.path.join(input_dir, f"{input_name}_{subtitle['language']}.ass")
@@ -53,7 +67,14 @@ def extract_audio_subtitle(input_file, timeout):
             # 尝试使用srt格式提取字幕
             command_extract_subtitle_srt = ['ffmpeg', '-i', input_file, '-map', f"0:{subtitle['index']}", '-c', 'srt', output_subtitle_srt]
             try:
-                subprocess.run(command_extract_subtitle_srt, check=True, stderr=subprocess.PIPE, timeout=timeout)
+                process = subprocess.Popen(command_extract_subtitle_srt, stderr=subprocess.PIPE)
+                while True:
+                    output = process.stderr.readline().decode().strip()
+                    if output == '' and process.poll() is not None:
+                        break
+                    if output:
+                        print(output, end='\r', flush=True)
+                process.wait(timeout=timeout)
                 print(f"已提取字幕: {output_subtitle_srt}")
                 continue
             except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
@@ -63,7 +84,14 @@ def extract_audio_subtitle(input_file, timeout):
             # 如果srt格式提取失败,尝试使用ass格式提取字幕
             command_extract_subtitle_ass = ['ffmpeg', '-i', input_file, '-map', f"0:{subtitle['index']}", '-c', 'ass', output_subtitle_ass]
             try:
-                subprocess.run(command_extract_subtitle_ass, check=True, stderr=subprocess.PIPE, timeout=timeout)
+                process = subprocess.Popen(command_extract_subtitle_ass, stderr=subprocess.PIPE)
+                while True:
+                    output = process.stderr.readline().decode().strip()
+                    if output == '' and process.poll() is not None:
+                        break
+                    if output:
+                        print(output, end='\r', flush=True)
+                process.wait(timeout=timeout)
                 print(f"已提取字幕: {output_subtitle_ass}")
             except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
                 print(f"使用ass格式提取字幕失败: {output_subtitle_ass}")
@@ -99,7 +127,6 @@ if __name__ == '__main__':
     args = parse_arguments()
     input_path = args.input
     timeout = args.timeout
-
     if check_file_exists(input_path):
         extract_audio_subtitle(input_path, timeout)
     else:

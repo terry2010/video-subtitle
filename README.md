@@ -73,3 +73,59 @@ FAILED (errors=1)
 
 ```
 #####  commit: ba949a1f4f9bde86348b4e3cd2ef74a69c406b01
+
+在本地调试后发现， 若字幕文件出现多种相同语言的文件， 会相互覆盖， 最终只剩一个语言的字幕文件
+``` 
+使用potplayer 查看测试的mkv文件， 发现字幕有chinese simpfied 和 chinese tranditional 两个中文字幕。还有3个英文字幕， 但是导出之后发现只有一个英文字幕和一个中文字幕。 修改代码，修复这个问题。
+执行程序后的信息： python.exe .\app.py --input=test.mkv --timeout=3
+文件中存在的音轨:
+- 语言: jpn, 编解码器: eac3
+- 语言: eng, 编解码器: eac3
+
+文件中存在的字幕:
+- 语言: eng, 编解码器: subrip
+- 语言: eng, 编解码器: subrip
+- 语言: eng, 编解码器: subrip
+- 语言: jpn, 编解码器: subrip
+- 语言: ara, 编解码器: subrip
+- 语言: cze, 编解码器: subrip
+- 语言: dan, 编解码器: subrip
+- 语言: ger, 编解码器: subrip
+- 语言: gre, 编解码器: subrip
+- 语言: spa, 编解码器: subrip
+- 语言: spa, 编解码器: subrip
+- 语言: spa, 编解码器: subrip
+- 语言: fin, 编解码器: subrip
+- 语言: fil, 编解码器: subrip
+- 语言: fre, 编解码器: subrip
+- 语言: fre, 编解码器: subrip
+- 语言: heb, 编解码器: subrip
+- 语言: hin, 编解码器: subrip
+- 语言: hrv, 编解码器: subrip
+- 语言: hun, 编解码器: subrip
+- 语言: ind, 编解码器: subrip
+- 语言: ind, 编解码器: subrip
+- 语言: ita, 编解码器: subrip
+- 语言: ita, 编解码器: subrip
+- 语言: kor, 编解码器: subrip
+- 语言: may, 编解码器: subrip
+- 语言: nob, 编解码器: subrip
+- 语言: dut, 编解码器: subrip
+- 语言: pol, 编解码器: subrip
+- 语言: por, 编解码器: subrip
+- 语言: por, 编解码器: subrip
+- 语言: rum, 编解码器: subrip
+- 语言: swe, 编解码器: subrip
+- 语言: tha, 编解码器: subrip
+- 语言: tur, 编解码器: subrip
+- 语言: ukr, 编解码器: subrip
+- 语言: vie, 编解码器: subrip
+- 语言: chi, 编解码器: subrip
+- 语言: chi, 编解码器: subrip
+
+```
+
+``` 
+能不用数字， 使用类似 eng   eng_sdh   eng_double  之类和potplay播放器上显示的字幕名类似的名字么
+```
+

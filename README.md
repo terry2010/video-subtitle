@@ -72,3 +72,4 @@ FAILED (errors=1)
 运行的时候， 如果字幕文件或者音轨文件存在， 会提示：已提取音轨: F:\code\video-subtitle\test_jpn.eac3\test_jpn.eac3.rwrite? [y/N] Not overwriting - exiting 。 去掉这个提示，让他自动覆盖
 
 ```
+#####  commit: ba949a1f4f9bde86348b4e3cd2ef74a69c406b01

@@ -49,8 +49,13 @@ FAILED (errors=1)
 ``` 
 修改代码， 修改为：获取 input 的值后， 用ffmpeg 将文件中的音轨数据和字幕数据的解析出来， 并打印到屏幕上
 ```
+#### commit：f465b53fe0e5ae9ac0eca4ec6eb2947b5a6debf4
 
+使用chatgpt4.0 尝试多次后始终生成代码错误， 改为使用claude3.0-opus 生成
+将app.py 源码发给claude之后：
+``` 
+在刚才的程序的基础上修改功能：提取音轨和字幕，并按语言将 音轨和字幕 存到test.mkv 同级目录。 并将这些音轨和字幕的信息赋值到 audio_list 和 subtitle_list 这两个变量里。 并将这两个变量的值打印出来
 
-
+```
 
 #####  commit: 

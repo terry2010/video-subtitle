@@ -214,7 +214,11 @@ def transcribe_audio_to_subtitle(audio_path, model_size="large-v1", device="cuda
 
     # 设置源语言和目标语言 (根据您的模型支持的语言进行调整)
     src_lang = "jpn_Jpan"
+    src_lang = map_whisper_lang_to_nllb(info.language)
     tgt_lang = "zho_Hans"
+
+    print("Detected src nllb language '%s' , to language '%s'" % (src_lang, tgt_lang))
+
 
     # 输入文本
     # article = "中国電力などが山口県上関町で計画する、原発の使用済み核燃料を一時保管する中間貯蔵施設の建設を巡り、中国電が23日、予定地で建設が可能かを判断するためのボーリング調査を開始した。調査は半年程度を予定し、既に進めている文献調査の結果と合わせて分析する。建設が可能と判断されれば、町に改めて建設の申し入れをし、町が建設の是非を判断する見通しだ。"
@@ -288,6 +292,127 @@ def translate_text(model, tokenizer, device, article, src_lang, tgt_lang):
     translation = tokenizer.batch_decode(translated_tokens, skip_special_tokens=True)[0]
     return translation, elapsed_time
 
+
+def map_whisper_lang_to_nllb(whisper_lang_code):
+    lang_map = {
+        'en': 'eng_Latn',
+        'zh': 'zho_Hans',
+        'de': 'deu_Latn',
+        'es': 'spa_Latn',
+        'ru': 'rus_Cyrl',
+        'ko': 'kor_Hang',
+        'fr': 'fra_Latn',
+        'ja': 'jpn_Jpan',
+        'pt': 'por_Latn',
+        'tr': 'tur_Latn',
+        'pl': 'pol_Latn',
+        'ca': 'cat_Latn',
+        'nl': 'nld_Latn',
+        'ar': 'ara_Arab',
+        'sv': 'swe_Latn',
+        'it': 'ita_Latn',
+        'id': 'ind_Latn',
+        'hi': 'hin_Deva',
+        'fi': 'fin_Latn',
+        'vi': 'vie_Latn',
+        'iw': 'heb_Hebr',
+        'uk': 'ukr_Cyrl',
+        'el': 'ell_Grek',
+        'ms': 'msa_Latn',
+        'cs': 'ces_Latn',
+        'ro': 'ron_Latn',
+        'da': 'dan_Latn',
+        'hu': 'hun_Latn',
+        'ta': 'tam_Taml',
+        'no': 'nor_Latn',
+        'th': 'tha_Thai',
+        'ur': 'urd_Arab',
+        'hr': 'hrv_Latn',
+        'bg': 'bul_Cyrl',
+        'lt': 'lit_Latn',
+        'la': 'lat_Latn',
+        'mi': 'mri_Latn',
+        'ml': 'mal_Mlym',
+        'cy': 'cym_Latn',
+        'sk': 'slk_Latn',
+        'te': 'tel_Telu',
+        'fa': 'fas_Arab',
+        'lv': 'lav_Latn',
+        'bn': 'ben_Beng',
+        'sr': 'srp_Cyrl',
+        'az': 'azj_Latn',
+        'sl': 'slv_Latn',
+        'kn': 'kan_Knda',
+        'et': 'est_Latn',
+        'mk': 'mkd_Cyrl',
+        'br': 'bre_Latn',
+        'eu': 'eus_Latn',
+        'is': 'isl_Latn',
+        'hy': 'hye_Armn',
+        'ne': 'nep_Deva',
+        'mn': 'mon_Cyrl',
+        'bs': 'bos_Latn',
+        'kk': 'kaz_Cyrl',
+        'sq': 'sqi_Latn',
+        'sw': 'swh_Latn',
+        'gl': 'glg_Latn',
+        'mr': 'mar_Deva',
+        'pa': 'pan_Guru',
+        'si': 'sin_Sinh',
+        'km': 'khm_Khmr',
+        'sn': 'sna_Latn',
+        'yo': 'yor_Latn',
+        'am': 'amh_Ethi',
+        'fy': 'fry_Latn',
+        'xh': 'xho_Latn',
+        'zu': 'zul_Latn',
+        'gd': 'gla_Latn',
+        'eo': 'epo_Latn',
+        'mt': 'mlt_Latn',
+        'tg': 'tgk_Cyrl',
+        'uz': 'uzb_Latn',
+        'ky': 'kir_Cyrl',
+        'my': 'mya_Mymr',
+        'af': 'afr_Latn',
+        'oc': 'oci_Latn',
+        'ka': 'kat_Geor',
+        'be': 'bel_Cyrl',
+        'tt': 'tat_Cyrl',
+        'sd': 'snd_Arab',
+        'ug': 'uig_Arab',
+        'ha': 'hau_Latn',
+        'sa': 'san_Deva',
+        'gn': 'grn_Latn',
+        'gu': 'guj_Gujr',
+        'ps': 'pus_Arab',
+        'tk': 'tuk_Latn',
+        'yi': 'ydd_Hebr',
+        'lo': 'lao_Laoo',
+        'fo': 'fao_Latn',
+        'su': 'sun_Latn',
+        'ht': 'hat_Latn',
+        'dz': 'dzo_Tibt',
+        'bo': 'bod_Tibt',
+        'ig': 'ibo_Latn',
+        'so': 'som_Latn',
+        'as': 'asm_Beng',
+        'or': 'ori_Orya',
+        'cu': 'chu_Cyrl',
+        'ce': 'che_Cyrl',
+        'rw': 'kin_Latn',
+        'wo': 'wol_Latn',
+        'prs': 'prs_Arab',
+        'mg': 'mlg_Latn',
+        'ckb': 'ckb_Arab',
+        'ln': 'lin_Latn',
+        'jv': 'jav_Latn'
+    }
+
+    if whisper_lang_code not in lang_map:
+        sys.exit(1)
+        raise ValueError(f"Unsupported Whisper language code: {whisper_lang_code}")
+
+    return lang_map[whisper_lang_code]
 
 if __name__ == '__main__':
     args = parse_arguments()

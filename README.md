@@ -140,4 +140,10 @@ FAILED (errors=1)
 #####  commit:6b10ce575f721b462382536b63f6b3623cd588dd
 
 
-调用fast-whisper  的逻辑没有ai能正确写出代码
+调用fast-whisper  的逻辑没有ai能正确写出代码，故相关代码我手写了
+
+开启新会话后提问：
+
+``` 
+我用whisper 将一段语言转换为文字， 并且whisper 判定了这个文字的语言， 我如何把whisper 判定的语言id 正确的传给nllb， 帮我写出我完整代码
+```

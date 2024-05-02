@@ -27,6 +27,7 @@ model_sizes = [
     "base"]
 
 for model_size in model_sizes:
+    print(f"downloading model {model_size}...")
     WhisperModel(model_size,
                  device="cuda",
                  compute_type="int8",

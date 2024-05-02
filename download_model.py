@@ -4,9 +4,6 @@ import sys
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 # os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
-model_size = "large-v3"
-model_size = "medium"
-model_size = "large-v2"
 
 # 获取当前 Python 文件所在目录
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -20,52 +17,20 @@ os.makedirs(custom_model_dir, exist_ok=True)
 # 设置环境变量 WHISPER_MODELS_DIR 为自定义目录
 os.environ["WHISPER_MODELS_DIR"] = custom_model_dir
 
-# model_path = "F:\\ai\\models\\Systran\\faster-whisper-medium"
+model_sizes = [
+    "large-v3",
+    "large-v2",
+    "large-v1",
+    "large",
+    "medium",
+    "small",
+    "base"]
 
-
-model = WhisperModel("large-v3",
-                     device="cpu",
-                     compute_type="int8",
-                     download_root=os.path.join("models", "Whisper", "faster-whisper"),
-                     )
-model = WhisperModel("large-v2",
-                     device="cpu",
-                     compute_type="int8",
-                     download_root=os.path.join("models", "Whisper", "faster-whisper"),
-                     )
-model = WhisperModel("large-v1",
-                     device="cpu",
-                     compute_type="int8",
-                     download_root=os.path.join("models", "Whisper", "faster-whisper"),
-                     )
-model = WhisperModel("large",
-                     device="cpu",
-                     compute_type="int8",
-                     download_root=os.path.join("models", "Whisper", "faster-whisper"),
-                     )
-model = WhisperModel("medium",
-                     device="cpu",
-                     compute_type="int8",
-                     download_root=os.path.join("models", "Whisper", "faster-whisper"),
-                     )
-model = WhisperModel("small",
-                     device="cpu",
-                     compute_type="int8",
-                     download_root=os.path.join("models", "Whisper", "faster-whisper"),
-                     )
-
-model = WhisperModel("base",
-                     device="cpu",
-                     compute_type="int8",
-                     download_root=os.path.join("models", "Whisper", "faster-whisper"),
-                     )
-
-
-model = WhisperModel("base",
-                     device="cpu",
-                     compute_type="int8",
-                     download_root=os.path.join("models", "Whisper", "faster-whisper"),
-                     )
-
+for model_size in model_sizes:
+    WhisperModel(model_size,
+                 device="cpu",
+                 compute_type="int8",
+                 download_root=os.path.join("models", "Whisper", "faster-whisper"),
+                 )
 
 sys.exit(1)

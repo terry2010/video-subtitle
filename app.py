@@ -7,6 +7,8 @@ import time
 from collections import defaultdict
 from faster_whisper import WhisperModel
 import sys
+import torch
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
@@ -200,21 +202,91 @@ def transcribe_audio_to_subtitle(audio_path, model_size="large-v1", device="cuda
     # model = WhisperModel("F:\\ai\\models\\Systran\\faster-whisper-large-v3", device=device, compute_type=compute_type)
     segments, info = model.transcribe(audio_path, beam_size=1, no_speech_threshold=0.6, best_of=5, patience=1)
     print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
-    for segment in segments:
-        print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
 
     output_path = audio_path + ".ai.srt"
+
+    # 指定本地模型路径
+    model_path = "F:/ai/models/facebook/nllb-200-distilled-1.3B"
+    # model_path = "F:/ai/models/facebook/nllb-200-1.3B"
+
+    # 初始化模型和 tokenizer
+    translate_model, translate_tokenizer, translate_device = translate_init(model_path)
+
+    # 设置源语言和目标语言 (根据您的模型支持的语言进行调整)
+    src_lang = "jpn_Jpan"
+    tgt_lang = "zho_Hans"
+
+    # 输入文本
+    # article = "中国電力などが山口県上関町で計画する、原発の使用済み核燃料を一時保管する中間貯蔵施設の建設を巡り、中国電が23日、予定地で建設が可能かを判断するためのボーリング調査を開始した。調査は半年程度を予定し、既に進めている文献調査の結果と合わせて分析する。建設が可能と判断されれば、町に改めて建設の申し入れをし、町が建設の是非を判断する見通しだ。"
+
+    # 翻译文本
+    # translation, elapsed_time = translate_text(translate_model, translate_tokenizer, translate_device, article, src_lang, tgt_lang)
+
+    # 打印原文、翻译结果和运行时间
+    # print(f"原文: {article}")
+    # print(f"翻译: {translation}")
+    # print(f"运行时间: {elapsed_time:.2f} 秒")
+
+
+
     with open(output_path, "w", encoding="utf-8") as srt:
         for segment in segments:
+            translation, elapsed_time = translate_text(translate_model,
+                                                       translate_tokenizer,
+                                                       translate_device,
+                                                       segment.text.strip(),
+                                                       src_lang, tgt_lang)
             print(
                 f"{segment.id}\n"
                 f"{segment.start} --> {segment.end}\n"
+                f"{translation}\n",
                 f"{segment.text.strip()}\n",
                 file=srt,
                 flush=True,
             )
+            print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
+            print(f"{translation}")
 
     print(f"字幕已保存到: {output_path}")
+
+
+def translate_init(model_path):
+    # 加载本地模型和 tokenizer
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_path, local_files_only=True)
+    tokenizer = AutoTokenizer.from_pretrained(model_path, local_files_only=True)
+
+    # 使用 GPU (如果有)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
+
+    # 将模型移动到 GPU
+    model.to(device)
+
+    return model, tokenizer, device
+
+def translate_text(model, tokenizer, device, article, src_lang, tgt_lang):
+    # 开始计时
+    start_time = time.time()
+
+    # 准备输入并移动到 GPU
+    inputs = tokenizer(article, return_tensors="pt", max_length=1024, truncation=False).to(device)
+
+    # 生成翻译 (在 GPU 上运行)
+    with torch.no_grad():
+        translated_tokens = model.generate(
+            **inputs,
+            forced_bos_token_id=tokenizer.lang_code_to_id[tgt_lang],
+            max_length=1024,
+            num_beams=5,
+        )
+
+    # 结束计时
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+
+    # 解码并返回翻译结果和运行时间
+    translation = tokenizer.batch_decode(translated_tokens, skip_special_tokens=True)[0]
+    return translation, elapsed_time
 
 
 if __name__ == '__main__':

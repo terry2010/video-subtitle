@@ -28,7 +28,7 @@ model_sizes = [
 
 for model_size in model_sizes:
     WhisperModel(model_size,
-                 device="cpu",
+                 device="cuda",
                  compute_type="int8",
                  download_root=os.path.join("models", "Whisper", "faster-whisper"),
                  )

@@ -24,45 +24,45 @@ os.environ["WHISPER_MODELS_DIR"] = custom_model_dir
 
 
 model = WhisperModel("large-v3",
-                     device="cuda",
+                     device="cpu",
                      compute_type="int8",
                      download_root=os.path.join("models", "Whisper", "faster-whisper"),
                      )
 model = WhisperModel("large-v2",
-                     device="cuda",
+                     device="cpu",
                      compute_type="int8",
                      download_root=os.path.join("models", "Whisper", "faster-whisper"),
                      )
 model = WhisperModel("large-v1",
-                     device="cuda",
+                     device="cpu",
                      compute_type="int8",
                      download_root=os.path.join("models", "Whisper", "faster-whisper"),
                      )
 model = WhisperModel("large",
-                     device="cuda",
+                     device="cpu",
                      compute_type="int8",
                      download_root=os.path.join("models", "Whisper", "faster-whisper"),
                      )
 model = WhisperModel("medium",
-                     device="cuda",
+                     device="cpu",
                      compute_type="int8",
                      download_root=os.path.join("models", "Whisper", "faster-whisper"),
                      )
 model = WhisperModel("small",
-                     device="cuda",
+                     device="cpu",
                      compute_type="int8",
                      download_root=os.path.join("models", "Whisper", "faster-whisper"),
                      )
 
 model = WhisperModel("base",
-                     device="cuda",
+                     device="cpu",
                      compute_type="int8",
                      download_root=os.path.join("models", "Whisper", "faster-whisper"),
                      )
 
 
 model = WhisperModel("base",
-                     device="cuda",
+                     device="cpu",
                      compute_type="int8",
                      download_root=os.path.join("models", "Whisper", "faster-whisper"),
                      )

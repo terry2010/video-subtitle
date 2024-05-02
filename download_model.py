@@ -1,4 +1,4 @@
-from faster_whisper import WhisperModel
+from transformers import AutoModelForSpeechSeq2Seq
 import os
 import sys
 
@@ -14,16 +14,14 @@ custom_model_dir = os.path.join(current_dir, "models")
 # 如果 models 目录不存在,则创建它
 os.makedirs(custom_model_dir, exist_ok=True)
 
-# 设置环境变量 WHISPER_MODELS_DIR 为自定义目录
-os.environ["WHISPER_MODELS_DIR"] = custom_model_dir
+model_ids = [
+    "openai/whisper-large-v2",
+    "openai/whisper-medium",
+    "openai/whisper-small",
+    "openai/whisper-base"
+]
 
-model_sizes = ["large-v3", "large-v2", "large-v1", "large", "medium", "small", "base"]
-
-for model_size in model_sizes:
-    WhisperModel(model_size,
-                 device="cpu",
-                 compute_type="int8",
-                 download_root=os.path.join("models", "Whisper", "faster-whisper"),
-                 )
+for model_id in model_ids:
+    AutoModelForSpeechSeq2Seq.from_pretrained(model_id, cache_dir=custom_model_dir)
 
 sys.exit(1)

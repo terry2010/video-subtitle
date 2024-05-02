@@ -5,8 +5,17 @@ import shutil
 import json
 import time
 from collections import defaultdict
+from faster_whisper import WhisperModel
+import sys
+
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
+os.add_dll_directory(r"C:\\Program Files\\NVIDIA\\CUDNN\\v8.8\\bin")
+
 
 def parse_arguments():
+    # python app.py --input=test.mkv --subtitle=jpn_SDH --audio=jpn.eac3
+
     parser = argparse.ArgumentParser(description='提取文件中的音轨和字幕,并按语言存储到同级目录')
     parser.add_argument('--input', type=str, required=True, help='输入的文件路径')
     parser.add_argument('--timeout', type=int, default=60, help='每个提取命令的超时时间(秒),默认为60秒')
@@ -14,8 +23,10 @@ def parse_arguments():
     parser.add_argument('--audio', type=str, help='要提取的音轨名称')
     return parser.parse_args()
 
+
 def check_file_exists(filepath):
     return os.path.exists(filepath)
+
 
 def print_audio_subtitle_info(audio_list, grouped_subtitles):
     print("文件中存在的音轨:")
@@ -26,6 +37,7 @@ def print_audio_subtitle_info(audio_list, grouped_subtitles):
     for (language, title), subtitles in grouped_subtitles.items():
         subtitle_name = f"{language}_{title}" if title else language
         print(f"- {subtitle_name}")
+
 
 def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_audio=None):
     if not shutil.which("ffmpeg"):
@@ -67,8 +79,12 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
                 found_audio = True
                 break
 
-        if (target_subtitle and not found_subtitle) or (target_audio and not found_audio):
-            print("指定的字幕或音轨不存在。")
+        if target_subtitle and not found_subtitle:
+            print("指定的字幕不存在。")
+            print_audio_subtitle_info(audio_list, grouped_subtitles)
+            return
+        if (target_audio and not found_audio):
+            print("指定的音轨不存在。")
             print_audio_subtitle_info(audio_list, grouped_subtitles)
             return
 
@@ -80,7 +96,8 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
                 audio_name = f"{audio['language']}.{audio['codec']}"
                 if not target_audio or audio_name == target_audio:
                     output_audio = os.path.join(input_dir, f"{input_name}_{audio_name}")
-                    command_extract_audio = ['ffmpeg', '-i', input_file, '-map', f"0:{audio['index']}", '-c', 'copy', '-nostats', '-loglevel', '0', '-y', output_audio]
+                    command_extract_audio = ['ffmpeg', '-i', input_file, '-map', f"0:{audio['index']}", '-c', 'copy',
+                                             '-nostats', '-loglevel', '0', '-y', output_audio]
                     try:
                         process = subprocess.Popen(command_extract_audio, stderr=subprocess.PIPE)
                         while True:
@@ -103,8 +120,10 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
                 if len(subtitles) > 1:
                     for subtitle in subtitles:
                         subtitle_counts[(language, title)] += 1
-                        output_subtitle = os.path.join(input_dir, f"{input_name}_{subtitle_name}_{subtitle_counts[(language, title)]}.srt")
-                        command_extract_subtitle = ['ffmpeg', '-i', input_file, '-map', f"0:{subtitle['index']}", '-c', 'srt', '-nostats', '-loglevel', '0', '-y', output_subtitle]
+                        output_subtitle = os.path.join(input_dir,
+                                                       f"{input_name}_{subtitle_name}_{subtitle_counts[(language, title)]}.srt")
+                        command_extract_subtitle = ['ffmpeg', '-i', input_file, '-map', f"0:{subtitle['index']}", '-c',
+                                                    'srt', '-nostats', '-loglevel', '0', '-y', output_subtitle]
                         try:
                             process = subprocess.Popen(command_extract_subtitle, stderr=subprocess.PIPE)
                             while True:
@@ -121,7 +140,8 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
                 else:
                     output_subtitle = os.path.join(input_dir, f"{input_name}_{subtitle_name}.srt")
                     subtitle = subtitles[0]
-                    command_extract_subtitle = ['ffmpeg', '-i', input_file, '-map', f"0:{subtitle['index']}", '-c', 'srt', '-nostats', '-loglevel', '0', '-y', output_subtitle]
+                    command_extract_subtitle = ['ffmpeg', '-i', input_file, '-map', f"0:{subtitle['index']}", '-c',
+                                                'srt', '-nostats', '-loglevel', '0', '-y', output_subtitle]
                     try:
                         process = subprocess.Popen(command_extract_subtitle, stderr=subprocess.PIPE)
                         while True:
@@ -140,6 +160,7 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
     except subprocess.CalledProcessError as e:
         print("错误:", e.stderr.decode())
 
+
 def parse_audio_info(info):
     audio_list = []
     for stream in info['streams']:
@@ -149,6 +170,7 @@ def parse_audio_info(info):
             codec = stream['codec_name']
             audio_list.append({'index': index, 'language': language, 'codec': codec})
     return audio_list
+
 
 def parse_subtitle_info(info):
     subtitle_list = []
@@ -161,6 +183,32 @@ def parse_subtitle_info(info):
             subtitle_list.append({'index': index, 'language': language, 'codec': codec, 'tags': tags})
     return subtitle_list
 
+
+def transcribe_audio_to_subtitle(audio_path, model_size="large-v1", device="cuda", compute_type="int8"):
+    model = WhisperModel(model_size,
+                         device=device,
+                         compute_type=compute_type,
+                         download_root=os.path.join("models", "Whisper", "faster-whisper"))
+    # model = WhisperModel("F:\\ai\\models\\Systran\\faster-whisper-large-v3", device=device, compute_type=compute_type)
+    segments, info = model.transcribe(audio_path, beam_size=1, no_speech_threshold=0.6, best_of=5, patience=1)
+    print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
+    for segment in segments:
+        print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
+
+    output_path = audio_path + ".ai.srt"
+    with open(output_path, "w", encoding="utf-8") as srt:
+        for segment in segments:
+            print(
+                f"{segment.id}\n"
+                f"{segment.start} --> {segment.end}\n"
+                f"{segment.text.strip()}\n",
+                file=srt,
+                flush=True,
+            )
+
+    print(f"字幕已保存到: {output_path}")
+
+
 if __name__ == '__main__':
     args = parse_arguments()
     input_path = args.input
@@ -170,5 +218,8 @@ if __name__ == '__main__':
 
     if check_file_exists(input_path):
         extract_audio_subtitle(input_path, timeout, target_subtitle, target_audio)
+        audio_path = os.path.join(os.path.dirname(input_path),
+                                  f"{os.path.splitext(os.path.basename(input_path))[0]}_{target_audio}")
+        transcribe_audio_to_subtitle(audio_path)
     else:
         print("文件不存在")

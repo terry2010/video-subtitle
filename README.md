@@ -138,3 +138,6 @@ FAILED (errors=1)
 ```
 
 #####  commit:6b10ce575f721b462382536b63f6b3623cd588dd
+
+
+调用fast-whisper  的逻辑没有ai能正确写出代码

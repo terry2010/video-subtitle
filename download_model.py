@@ -4,7 +4,6 @@ import sys
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 # os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
-os.add_dll_directory(r"C:\\Program Files\\NVIDIA\\CUDNN\\v8.8\\bin")
 model_size = "large-v3"
 model_size = "medium"
 model_size = "large-v2"

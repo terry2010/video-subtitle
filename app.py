@@ -189,6 +189,14 @@ def transcribe_audio_to_subtitle(audio_path, model_size="large-v1", device="cuda
                          device=device,
                          compute_type=compute_type,
                          download_root=os.path.join("models", "Whisper", "faster-whisper"))
+    # Run on GPU with FP16
+    # model = WhisperModel(model_size, device="cuda", compute_type="int8")
+
+    # or run on GPU with INT8
+    # model = WhisperModel(model_size, device="cuda", compute_type="int8_float16")
+    # or run on CPU with INT8
+    # model = WhisperModel(model_size, device="cpu", compute_type="int8")
+
     # model = WhisperModel("F:\\ai\\models\\Systran\\faster-whisper-large-v3", device=device, compute_type=compute_type)
     segments, info = model.transcribe(audio_path, beam_size=1, no_speech_threshold=0.6, best_of=5, patience=1)
     print("Detected language '%s' with probability %f" % (info.language, info.language_probability))

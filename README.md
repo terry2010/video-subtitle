@@ -147,3 +147,8 @@ FAILED (errors=1)
 ``` 
 我用whisper 将一段语言转换为文字， 并且whisper 判定了这个文字的语言， 我如何把whisper 判定的语言id 正确的传给nllb， 帮我写出我完整代码
 ```
+
+
+将pytorch调用nllb 的逻辑换成利用ctranslator2 调用nllb 的代码AI写不出来， 故相关代码我看着官方文档手写了
+
+##### commit:33be1fa476b556561a6690eafe298f5e0a5a4bb9

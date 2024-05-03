@@ -19,8 +19,8 @@ os.makedirs(custom_model_dir, exist_ok=True)
 
 
 model_name = "facebook/hf-seamless-m4t-medium"
-config = SeamlessM4TConfig.from_pretrained(model_name, cache_dir=models_folder)
-model = SeamlessM4TModel.from_pretrained(model_name, cache_dir=models_folder)
+config = SeamlessM4TConfig.from_pretrained(model_name, cache_dir=custom_model_dir)
+model = SeamlessM4TModel.from_pretrained(model_name, cache_dir=custom_model_dir)
 
 # Move the model to the GPU (if available)
 model.to("cuda")
@@ -49,3 +49,5 @@ for model_size in model_sizes:
                  )
 
 sys.exit(1)
+
+# ct2-transformers-converter --model  "F:\\ai\\models\\Whisper\\faster-whisper\\models--Systran--faster-whisper-large-v3\\" --output_dir models/ctranslate2/Whisper/faster-whisper/large-v3

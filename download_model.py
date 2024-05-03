@@ -1,4 +1,6 @@
 from faster_whisper import WhisperModel
+from transformers import SeamlessM4TModel, SeamlessM4TConfig
+
 import os
 import sys
 
@@ -13,6 +15,18 @@ custom_model_dir = os.path.join(current_dir, "models")
 
 # 如果 models 目录不存在,则创建它
 os.makedirs(custom_model_dir, exist_ok=True)
+
+
+
+model_name = "facebook/hf-seamless-m4t-medium"
+config = SeamlessM4TConfig.from_pretrained(model_name, cache_dir=models_folder)
+model = SeamlessM4TModel.from_pretrained(model_name, cache_dir=models_folder)
+
+# Move the model to the GPU (if available)
+model.to("cuda")
+
+
+
 
 # 设置环境变量 WHISPER_MODELS_DIR 为自定义目录
 os.environ["WHISPER_MODELS_DIR"] = custom_model_dir

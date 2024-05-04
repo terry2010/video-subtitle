@@ -164,4 +164,4 @@ FAILED (errors=1)
 将audio_subtitle_transcriber.py 按功能拆成两个文件
 ```
 
-##### commit:
+##### commit:378034e928b4e89e14acf2673ac757b12362f4d5

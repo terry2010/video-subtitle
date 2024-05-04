@@ -159,6 +159,9 @@ FAILED (errors=1)
 ``` 
 整理代码，将单个文件按功能拆分，方便二次开发
 ```
+##### commit:25dc0f38ad139995cd73e3c51dbbcc0d1899f436
+``` 
+将audio_subtitle_transcriber.py 按功能拆成两个文件
+```
 
-
-
+##### commit:

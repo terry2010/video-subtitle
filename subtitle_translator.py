@@ -3,7 +3,12 @@ import time
 import ctranslate2
 from transformers import AutoTokenizer
 
-def translate_subtitle(srt_dict, src_lang, tgt_lang, model_path1, model_path):
+def translate_subtitle(srt_dict, src_lang, tgt_lang):
+    # 指定本地模型路径
+    model_path1 = "F:\\ai\\models\\facebook\\nllb-200-distilled-1.3B"
+    # model_path = "F:\\code\\video-subtitle\\models\\ctranslate2\\facebook\\nllb-200-distilled-1.3B"
+    model_path = os.path.join("models", "Ctranslate2", "facebook", "nllb-200-distilled-1.3B")
+
     trans_time_start = time.time()
 
     # 初始化ctranslate2模型

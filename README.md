@@ -165,3 +165,9 @@ FAILED (errors=1)
 ```
 
 ##### commit:378034e928b4e89e14acf2673ac757b12362f4d5
+
+
+``` 
+ ct2-transformers-converter --model  "F:\\ai\\models\\Systran\\faster-distil-whisper-large-v3" --output_dir models/ctranslate2/Whisper/faster-whisper/distil-large-v3
+
+```

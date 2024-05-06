@@ -5,15 +5,13 @@ from transformers import AutoTokenizer
 
 def translate_subtitle(srt_dict, src_lang, tgt_lang):
     # 指定本地模型路径
-    model_path1 = "F:\\ai\\models\\facebook\\nllb-200-distilled-1.3B"
-    # model_path = "F:\\code\\video-subtitle\\models\\ctranslate2\\facebook\\nllb-200-distilled-1.3B"
     model_path = os.path.join("models", "Ctranslate2", "facebook", "nllb-200-distilled-1.3B")
 
     trans_time_start = time.time()
 
     # 初始化ctranslate2模型
     translator = ctranslate2.Translator(model_path, device="cuda")
-    tokenizer = AutoTokenizer.from_pretrained(model_path1, src_lang=src_lang)
+    tokenizer = AutoTokenizer.from_pretrained(model_path, src_lang=src_lang)
 
     print("Detected src nllb language '%s' , to language '%s'" % (src_lang, tgt_lang))
 

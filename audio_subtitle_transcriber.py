@@ -17,7 +17,7 @@ def transcribe_audio_to_subtitle(audio_path, model_size="large-v1", device="cuda
     # 如果需要将JSON字符串写入文件
     with open('srt_dict.json', 'w', encoding='utf-8') as json_file:
          json.dump(srt_dict, json_file, ensure_ascii=False, indent=4)
-
+    srt_dict = {}
     with open('srt_dict.json', 'r', encoding='utf-8') as json_file:
              srt_dict = json.load(json_file)
     # 设置源语言和目标语言

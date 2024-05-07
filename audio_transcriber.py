@@ -2,7 +2,6 @@ import os
 import time
 import torch
 from faster_whisper import WhisperModel
-from datetime import timedelta
 def transcribe_audio(audio_path, model_size="large-v1", device="cuda", compute_type="int8"):
     audio_time_start = time.time()
 

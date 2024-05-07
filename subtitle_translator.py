@@ -34,6 +34,26 @@ def translate_subtitle(subtitle_file, src_lang, tgt_lang, output_format):
     output_path = f"{os.path.splitext(subtitle_file)[0]}.{src_lang}.ai.{tgt_lang}.{output_format}"
 
     subs = pysubs2.SSAFile()
+
+    # 定义字幕样式
+    style_top = pysubs2.SSAStyle(fontsize=24)  # 上面一行字幕的样式，默认大小
+    style_bottom = pysubs2.SSAStyle(fontsize=8 , primarycolor=pysubs2.Color(255, 165, 0))  # 下面一行字幕的样式，三分之一大小，橘黄色
+
+    # 添加字幕样式到字幕文件中
+    subs.styles["Default"] = style_top
+    subs.styles["BottomStyle"] = style_bottom  # 为下面一行字幕的样式指定一个名称
+
+    style_with_border = pysubs2.SSAStyle(fontsize=24, borderstyle=1, outline=1,
+                                         primarycolor=pysubs2.Color(255, 255, 255),
+                                         backcolor=pysubs2.Color(0, 0, 0))  # 白色文字，黑色边框
+    style_bottom_with_border = pysubs2.SSAStyle(fontsize=8, borderstyle=1, outline=1,
+                                                primarycolor=pysubs2.Color(255, 165, 0),
+                                                backcolor=pysubs2.Color(0, 0, 0))  # 橘黄色文字，黑色边框
+    # 添加样式到字幕文件
+    subs.styles["DefaultWithBorder"] = style_with_border
+    subs.styles["BottomStyleWithBorder"] = style_bottom_with_border
+
+
     for seg_num, seg in subtitle_dict.items():
         source = tokenizer.convert_ids_to_tokens(tokenizer.encode(seg['text'].strip()))
         target_prefix = [tgt_lang]
@@ -43,10 +63,12 @@ def translate_subtitle(subtitle_file, src_lang, tgt_lang, output_format):
 
         event = pysubs2.SSAEvent(start=seg['start'], end=seg['end'])
         if output_format == "ass":
-            event.text = f"{translation}\\N{{\\fs{int(subs.styles['Default'].fontsize / 3)}}}{seg['text']}"
+            # event.text = f"{translation}\\N{{\\rBottomStyle}}{seg['text']}"  # 使用样式名称引用下面一行字幕的样式
+            event.text = f"{translation}{{\\rDefaultWithBorder}}\\N{{\\rBottomStyleWithBorder}}{seg['text']}"
+
+            print(event.text)
         else:
             event.text = f"{translation}\n{seg['text']}"
-        print(event.text)
         subs.append(event)
 
     subs.save(output_path, encoding="utf-8")

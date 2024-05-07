@@ -18,14 +18,14 @@ python app.py transcribe --audio-path test.mkv
 翻译已有字幕文件（假设你已经有了一个名为'subtitles.srt'的字幕文件需要从日语翻译成中文）:
 
 ``` 
-python app.py translate --srt-file test_jpn_SDH.srt --src-lang ja --tgt-lang zho_Hans
+python app.py translate --srt-file test.ai.en.srt --src-lang en --tgt-lang zho_Hans
 
 ```
 
 一步完成：从音频文件直接生成翻译后的字幕（假设音频为test_audio.wav，目标是将其内容转为字幕后并翻译成中文，源语言自动检测）:
 
 ``` 
-python app.py translate_from_audio --audio-path test.mkv --model-size large-v1 --device cuda --tgt-lang zho_Hans
+python app.py translate_from_audio --audio-path test.mov --model-size large-v1 --device cuda --tgt-lang zho_Hans
 
 ```
 

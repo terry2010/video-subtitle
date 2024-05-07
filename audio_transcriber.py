@@ -2,7 +2,7 @@ import os
 import time
 import torch
 from faster_whisper import WhisperModel
-
+from datetime import timedelta
 def transcribe_audio(audio_path, model_size="large-v1", device="cuda", compute_type="int8"):
     audio_time_start = time.time()
 
@@ -19,9 +19,22 @@ def transcribe_audio(audio_path, model_size="large-v1", device="cuda", compute_t
 
     with open(output_path, "w", encoding="utf-8") as srt:
         for segment in segments:
+            # 将秒数转换为小时:分钟:秒,毫秒的格式
+            hours, remainder = divmod(int(segment.start), 3600)
+            minutes, seconds = divmod(remainder, 60)
+            milliseconds = int((segment.start - int(segment.start)) * 1000)
+
+            formatted_start = f"{hours:02d}:{minutes:02d}:{seconds:02d},{milliseconds:03d}"
+
+            hours, remainder = divmod(int(segment.end), 3600)
+            minutes, seconds = divmod(remainder, 60)
+            milliseconds = int((segment.end - int(segment.end)) * 1000)
+
+            formatted_end = f"{hours:02d}:{minutes:02d}:{seconds:02d},{milliseconds:03d}"
+
             print(
                 f"{segment.id}\n"
-                f"{segment.start} --> {segment.end}\n"
+                f"{formatted_start} --> {formatted_end}\n"
                 f"{segment.text.strip()}\n",
                 file=srt,
                 flush=True,

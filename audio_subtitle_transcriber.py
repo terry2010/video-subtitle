@@ -21,7 +21,7 @@ def transcribe_audio_to_subtitle(audio_path, model_size="large-v1", device="cuda
     with open('srt_dict.json', 'r', encoding='utf-8') as json_file:
              srt_dict = json.load(json_file)
     # 设置源语言和目标语言
-    detected_lang = 'ja'
+    # detected_lang = 'ja'
     src_lang = map_whisper_lang_to_nllb(detected_lang)
     tgt_lang = "zho_Hans"
 

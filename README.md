@@ -1,6 +1,38 @@
 # video-subtitle
 a video subtitle generator
 
+
+# 提取视频中的所有字幕和音轨:
+``` 
+python app.py extract --input test.mkv
+
+```
+
+仅将音频文件转换成字幕（假设你已经从视频中提取了音频或有单独的音频文件）:
+
+``` 
+python app.py transcribe --audio-path test.mkv
+
+```
+
+翻译已有字幕文件（假设你已经有了一个名为'subtitles.srt'的字幕文件需要从日语翻译成中文）:
+
+``` 
+python app.py translate --srt-file test_jpn_SDH.srt --src-lang ja --tgt-lang zho_Hans
+
+```
+
+一步完成：从音频文件直接生成翻译后的字幕（假设音频为test_audio.wav，目标是将其内容转为字幕后并翻译成中文，源语言自动检测）:
+
+``` 
+python app.py translate_from_audio --audio-path test.mkv --model-size large-v1 --device cuda --tgt-lang zho_Hans
+
+```
+
+
+
+
+
 全程使用chatgpt4.0, claude3-opus 网页版 生成代码
 
 整体而言， 目前（2024-04-29） chatgpt4网页版 在编程能力方面全面落后于 claude3-opus 。 chatgpt4 仅适合生成代码片段，无法正确无错误的生成完整代码
@@ -171,3 +203,7 @@ FAILED (errors=1)
  ct2-transformers-converter --model  "F:\\ai\\models\\Systran\\faster-distil-whisper-large-v3" --output_dir models/ctranslate2/Whisper/faster-whisper/distil-large-v3
 
 ```
+
+
+不同功能的测试命令示例。假设所有必要的脚本和模型都已经正确设置并且可以访问。
+

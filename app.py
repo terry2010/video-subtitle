@@ -2,6 +2,7 @@ import argparse
 from audio_subtitle_extractor import extract_audio_subtitle
 from audio_subtitle_transcriber import transcribe_audio_to_subtitle
 from subtitle_translator import translate_subtitle
+import os
 
 
 def parse_arguments():

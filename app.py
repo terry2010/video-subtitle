@@ -49,16 +49,24 @@ if __name__ == "__main__":
     elif args.action == 'translate':
         translate_subtitle(args.srt_file, args.src_lang, args.tgt_lang)
     elif args.action == 'translate_from_audio':
-        # 先转录音频为字幕
-        srt_file = transcribe_audio_to_subtitle(args.audio_path, args.model_size, args.device)
 
-        # 假设转录后的字幕文件名格式为 'audio_path_language.srt'
-        # 这里需要根据实际输出的文件名规则调整
-        base_name = os.path.splitext(os.path.basename(args.audio_path))[0]
-        language_detected = args.src_lang or "auto"  # 如果没有指定源语言，则自动检测
-        srt_file_with_lang = f"{base_name}_{language_detected}.srt"
+        srt_file_path, detected_language = transcribe_audio_to_subtitle(args.audio_path, args.model_size, args.device)
+        # 此处不再需要手动构造SRT文件名，因为已从函数获取了正确的路径
+        translate_subtitle(srt_file_path, detected_language, args.tgt_lang)
 
-        # 进行翻译
-        translate_subtitle(srt_file_with_lang, language_detected, args.tgt_lang)
+
+        #
+        # # 先转录音频为字幕
+        # srt_file, detected_language = transcribe_audio_to_subtitle(args.audio_path, args.model_size, args.device)
+        #
+        # # 假设转录后的字幕文件名格式为 'audio_path_language.srt'
+        # # 这里需要根据实际输出的文件名规则调整
+        # base_name = os.path.splitext(os.path.basename(args.audio_path))[0]
+        # # language_detected = args.src_lang or "auto"  # 如果没有指定源语言，则自动检测
+        # srt_file_with_lang = f"{base_name}_{detected_language}.srt"
+        # # srt_file_with_lang = "test.mkv.ai.ja.srt"
+        # # language_detected = "ja"
+        # # 进行翻译
+        # translate_subtitle(srt_file_with_lang, detected_language, args.tgt_lang)
     else:
         print("未选择有效的操作，请使用 --help 查看可用操作。")

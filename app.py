@@ -47,12 +47,12 @@ if __name__ == "__main__":
     elif args.action == 'transcribe':
         transcribe_audio_to_subtitle(args.audio_path, args.model_size, args.device)
     elif args.action == 'translate':
-        translate_subtitle(args.srt_file, args.src_lang, args.tgt_lang)
+        translate_subtitle(args.srt_file, args.src_lang, args.tgt_lang,"ass")
     elif args.action == 'translate_from_audio':
 
         srt_file_path, detected_language = transcribe_audio_to_subtitle(args.audio_path, args.model_size, args.device)
         # 此处不再需要手动构造SRT文件名，因为已从函数获取了正确的路径
-        translate_subtitle(srt_file_path, detected_language, args.tgt_lang)
+        translate_subtitle(srt_file_path, detected_language, args.tgt_lang,"ass")
 
 
         #

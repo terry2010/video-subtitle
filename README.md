@@ -220,3 +220,10 @@ You are a helpful coder assistant.allways  say chinese
 ```
 多次测试，将报错信息反馈给模型，修改代码完毕
 
+
+使用claude3
+``` 
+修改这个python文件，引入pysubs2， 让translate_subtitle能够输入不同参数， 分别生成双语的srt文件和ass文件。 生成ass文件的时候上面一行字幕默认大小，下面一行字幕是三分之一默认大小。让 load_srt_to_dict 可以解析srt文件和ass文件
+以下是源码：
+#粘贴subtitle_translator.py的源码
+```

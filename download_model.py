@@ -26,17 +26,30 @@ os.makedirs(custom_model_dir, exist_ok=True)
 # model.to("cuda")
 
 
-# 模型名称
-model_name = "facebook/nllb-200-distilled-1.3B"
+# # 模型名称
+# model_name = "facebook/nllb-200-distilled-1.3B"
+#
+# # 检查模型是否已经在models文件夹中
+# model_dir = os.path.join('models', model_name)
+# if not os.path.exists(model_dir):
+#     os.makedirs(model_dir)
+#
+# # 加载分词器和模型
+# tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=model_dir)
+# model = AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir=model_dir)
 
-# 检查模型是否已经在models文件夹中
-model_dir = os.path.join('models', model_name)
-if not os.path.exists(model_dir):
-    os.makedirs(model_dir)
+model_list = ["facebook/nllb-200-distilled-1.3B","facebook/nllb-200-3.3B"]
 
-# 加载分词器和模型
-tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=model_dir)
-model = AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir=model_dir)
+for model_name in model_list:
+    model_path = os.path.join(model_dir, model_name)
+    if not os.path.exists(model_path):
+        os.makedirs(model_path)
+
+    # 加载分词器和模型
+    tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=model_dir)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir=model_dir)
+
+
 
 # 设置环境变量 WHISPER_MODELS_DIR 为自定义目录
 os.environ["WHISPER_MODELS_DIR"] = custom_model_dir

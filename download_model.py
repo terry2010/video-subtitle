@@ -41,6 +41,7 @@ os.makedirs(custom_model_dir, exist_ok=True)
 model_list = ["facebook/nllb-200-distilled-1.3B","facebook/nllb-200-3.3B"]
 
 for model_name in model_list:
+    model_dir = os.path.join('models', model_name)
     model_path = os.path.join(model_dir, model_name)
     if not os.path.exists(model_path):
         os.makedirs(model_path)

@@ -2,6 +2,8 @@ import os
 import time
 import torch
 from faster_whisper import WhisperModel
+
+
 def transcribe_audio(audio_path, model_size="large-v1", device="cuda", compute_type="int8"):
     audio_time_start = time.time()
 
@@ -9,7 +11,14 @@ def transcribe_audio(audio_path, model_size="large-v1", device="cuda", compute_t
                          device=device,
                          compute_type=compute_type,
                          download_root=os.path.join("models", "Whisper", "faster-whisper"))
-    segments, info = model.transcribe(audio_path, beam_size=1, no_speech_threshold=0.6, best_of=5, patience=1)
+    segments, info = model.transcribe(audio_path,
+                                      beam_size=1,
+                                      no_speech_threshold=0.6,
+                                      best_of=5,
+                                      patience=1,
+                                      vad_filter=True,
+                                      vad_parameters=dict(min_silence_duration_ms=500),
+                                      )
     print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
 
     output_path = audio_path + ".ai." + info.language + ".srt"
@@ -38,11 +47,12 @@ def transcribe_audio(audio_path, model_size="large-v1", device="cuda", compute_t
                 file=srt,
                 flush=True,
             )
-            srt_dict[segment.id] = {"id":segment.id,"start":segment.start,"end":segment.end,"text":segment.text.strip()}
+            srt_dict[segment.id] = {"id": segment.id, "start": segment.start, "end": segment.end,
+                                    "text": segment.text.strip()}
             print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
 
     time_taken = time.time() - audio_time_start
-    print(f"原生字幕已保存到: {output_path},花费时间：{time_taken}" )
+    print(f"原生字幕已保存到: {output_path},花费时间：{time_taken}")
 
     del model
     torch.cuda.empty_cache()

@@ -29,7 +29,6 @@ def transcribe_audio(audio_path, model_size="large-v1", device="cuda", compute_t
         for segment in segments:
 
             formatted_start = format_seconds(segment.start)
-
             formatted_end = format_seconds(segment.end)
 
             print(
@@ -41,7 +40,7 @@ def transcribe_audio(audio_path, model_size="large-v1", device="cuda", compute_t
             )
             srt_dict[segment.id] = {"id": segment.id, "start": segment.start, "end": segment.end,
                                     "text": segment.text.strip()}
-            print("[%s -> %s] %s" % (formatted_start, formatted_end, segment.text))
+            # print("[%s -> %s] %s" % (formatted_start, formatted_end, segment.text))
             print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
 
     time_taken = time.time() - audio_time_start

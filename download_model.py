@@ -8,6 +8,8 @@ os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 #windows powershell:
 #$env:HF_ENDPOINT = "https://hf-mirror.com"
+#linux
+# HF_ENDPOINT="https://hf-mirror.com" python download_model.py
 
 # 获取当前 Python 文件所在目录
 current_dir = os.path.dirname(os.path.abspath(__file__))

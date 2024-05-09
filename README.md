@@ -3,10 +3,12 @@ a video subtitle generator
 
 
 # 提取视频中的所有字幕和音轨:
+
+测试中发现， mp3 的识别率会低于wav和flac，aac等无损格式
 ``` 
 python app.py extract --input test.mov
 
-python app.py extract --input test.mov  --audio eng --audio-format mp3 --audio-sample-rate 16000
+python app.py extract --input test.mov  --audio eng --audio-format wav --audio-sample-rate 16000
 
 ```
 
@@ -17,6 +19,8 @@ python app.py transcribe --audio-path test.mov
 
 python app.py transcribe --audio-path test_eng.mp3
 
+
+python app.py transcribe --audio-path test_eng.mp3 --model-size large-v3
 
 python app.py transcribe --audio-path test_eng.mp3 --model-size small
 
@@ -36,6 +40,9 @@ python app.py translate_from_audio --audio-path test_eng.aac --model-size large-
 
 
 python app.py translate_from_audio --audio-path test_eng.mp3 --model-size small --device cuda --tgt-lang zho_Hans
+
+python app.py translate_from_audio --audio-path test.mov --model-size small --device cuda --src-lang en --tgt-lang zho_Hans
+
 
 ```
 

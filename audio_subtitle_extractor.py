@@ -10,10 +10,13 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
                            audio_sample_rate=16000):
     if not shutil.which("ffmpeg"):
         print("请确保ffmpeg已安装")
-        return
+        return "",""
 
     input_dir = os.path.dirname(os.path.abspath(input_file))
     input_name = os.path.splitext(os.path.basename(input_file))[0]
+
+    output_audio = ""
+    output_subtitle = ""
 
     # 获取音轨和字幕信息,并按语言分组
     command_info = ['ffprobe', '-v', 'quiet', '-print_format', 'json', '-show_streams', input_file]
@@ -56,11 +59,9 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
         if not found_subtitle:
             print("指定的字幕不存在。")
             print_audio_subtitle_info(audio_list, grouped_subtitles)
-            return
         if not found_audio:
             print("指定的音轨不存在。")
             print_audio_subtitle_info(audio_list, grouped_subtitles)
-            return
 
         print("开始提取音轨和字幕...")
 
@@ -72,8 +73,9 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
                 if not target_audio or audio_name == target_audio:
                     if "auto" != audio_format:
                         output_audio = os.path.join(input_dir, f"{input_name}_{audio_name}.{audio_format}")
+                        tmp_acodec = get_audio_codec_by_extension(audio_format)
                         command_extract_audio = ['ffmpeg', '-i', input_file, '-map', f"0:{audio['index']}", '-acodec',
-                                                 audio_format, '-ar', str(audio_sample_rate), '-ac', '1', '-vn',
+                                                 tmp_acodec, '-ar', str(audio_sample_rate), '-ac', '1', '-vn',
                                                  '-nostats', '-loglevel', '0', '-y', output_audio]
                     else:
                         output_audio = os.path.join(input_dir, f"{input_name}_{audio_name}.{audio_codec}")
@@ -140,5 +142,33 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
                             print("错误信息:", str(e))
 
         print("提取完成")
+        return output_audio, output_subtitle
     except subprocess.CalledProcessError as e:
         print("错误:", e.stderr.decode())
+        return output_audio, output_subtitle
+
+
+def get_audio_codec_by_extension(extension):
+    """
+    根据音频文件扩展名，返回推荐的FFmpeg编码器名称。
+    这个示例包括了一些常见的音频格式，但不是全部。
+
+    :param extension: 音频文件的扩展名，不包括点，如'mp3', 'wav', 'aac'等。
+    :return: 对应的音频编码器名称，若未知扩展名，则返回None。
+    """
+    codec_mapping = {
+        'mp3': 'libmp3lame',  # 常用的MP3编码器
+        'wav': 'pcm_s16le',  # 适用于需要无损PCM数据的场景
+        'aac': 'aac',  # 高效率音频编码
+        'flac': 'flac',  # 无损音频压缩
+        'alac': 'alac',  # 苹果无损音频编码
+        'ogg': 'libvorbis',  # Ogg容器中常用的Vorbis编码
+        'opus': 'libopus',  # 高质量且适合网络传输的编码
+        'wma': 'wmav2',  # Windows Media Audio，注意FFmpeg支持有限
+        'm4a': 'aac',  # M4A通常使用AAC编码
+        'aiff': 'pcm_s16le',  # 类似WAV，适用于AIFF文件
+        'ac3': 'ac3',  # Dolby Digital编码
+        'dts': 'dca',  # DTS音频编码
+    }
+
+    return codec_mapping.get(extension.lower(), None)

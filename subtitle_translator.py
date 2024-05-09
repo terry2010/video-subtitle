@@ -86,7 +86,7 @@ def translate_subtitle(subtitle_file, src_lang, tgt_lang):
         ass_event.text = f"{translation}{{\\rDefaultWithBorder}}\\N{{\\rBottomStyleWithBorder}}{seg['text']}"
         ass_subs.append(ass_event)
 
-        print(f"{seg['start']}ms-{seg['end']}ms {seg['text']} >> {translation}")
+        print("[%.2fs -> %.2fs] %s >> %s" % (seg['start'], seg['end'], seg['text'],translation))
 
     srt_subs.save(srt_output_path, encoding="utf-8")
     print(f"翻译后的srt字幕已保存到: {srt_output_path}")

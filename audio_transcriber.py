@@ -1,6 +1,7 @@
 import os
 import time
 import torch
+import json
 from faster_whisper import WhisperModel
 
 
@@ -18,6 +19,7 @@ def transcribe_audio(audio_path, model_size="large-v1", device="cuda", compute_t
                                       patience=1,
                                       vad_filter=True,
                                       vad_parameters=dict(min_silence_duration_ms=300),
+                                      word_timestamps=False,
                                       )
     print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
 

@@ -4,14 +4,14 @@ a video subtitle generator
 
 # 提取视频中的所有字幕和音轨:
 ``` 
-python app.py extract --input test.mkv
+python app.py extract --input test.mov
 
 ```
 
 仅将音频文件转换成字幕（假设你已经从视频中提取了音频或有单独的音频文件）:
 
 ``` 
-python app.py transcribe --audio-path test.mkv
+python app.py transcribe --audio-path test.mov
 
 ```
 
@@ -25,7 +25,7 @@ python app.py translate --srt-file test.ai.en.srt --src-lang en --tgt-lang zho_H
 一步完成：从音频文件直接生成翻译后的字幕（假设音频为test_audio.wav，目标是将其内容转为字幕后并翻译成中文，源语言自动检测）:
 
 ``` 
-python app.py translate_from_audio --audio-path test.mov --model-size large-v1 --device cuda --tgt-lang zho_Hans
+python app.py translate_from_audio --audio-path test_eng.aac --model-size large-v1 --device cuda --tgt-lang zho_Hans
 
 ```
 

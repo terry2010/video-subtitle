@@ -11,18 +11,6 @@ def transcribe_audio_to_subtitle(audio_path, model_size="large-v1", device="cuda
     src_path, srt_dict, detected_lang = transcribe_audio(audio_path, model_size, device, compute_type)
     print(f"src_path:{src_path},detected_lang:{detected_lang}")
     return src_path, detected_lang
-    # # 使用srt_dict的值（即字幕段落）来生成或重写SRT文件，这里假设我们只需要写入一次
-    # base_name = os.path.splitext(os.path.basename(audio_path))[0]
-    # srt_file_path = f"{base_name}_transcribed.srt"
-    # srt_file_path = f"{base_name}.ai.{detected_lang}.srt"
-    #
-    # # 将字幕内容写入SRT文件，这里直接使用srt_dict的值
-    # with open(srt_file_path, 'w', encoding='utf-8') as srt_file:
-    #     for seg_num, seg_info in enumerate(srt_dict.values(), start=1):
-    #         srt_file.write(f"{seg_num}\n{seg_info['start']} --> {seg_info['end']}\n{seg_info['text']}\n\n")
-    #
-    # print(f"字幕文件已保存至: {srt_file_path}")
-    # return srt_file_path, detected_lang
 
 
 # 注意：这个函数在您提供的上下文中并未直接使用，但提供完整性

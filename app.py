@@ -49,9 +49,10 @@ if __name__ == "__main__":
     elif args.action == 'transcribe':
         transcribe_audio_to_subtitle(args.audio_path, args.model_size, args.device)
     elif args.action == 'translate':
-        translate_subtitle(args.srt_file, args.src_lang, args.tgt_lang, "ass")
+        translate_subtitle(args.srt_file, args.src_lang, args.tgt_lang)
     elif args.action == 'translate_from_audio':
+        # extract_audio_subtitle(args.input, args.timeout, args.subtitle, args.audio, "mp3",16000)
         srt_file_path, detected_language = transcribe_audio_to_subtitle(args.audio_path, args.model_size, args.device)
-        translate_subtitle(srt_file_path, detected_language, args.tgt_lang, "ass")
+        translate_subtitle(srt_file_path, detected_language, args.tgt_lang)
     else:
         print("未选择有效的操作，请使用 --help 查看可用操作。")

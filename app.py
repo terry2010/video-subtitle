@@ -37,7 +37,7 @@ def parse_arguments():
     translate_from_audio_parser.add_argument('--timeout', type=int, default=60, help='提取命令超时时间(秒)')
     translate_from_audio_parser.add_argument('--subtitle', type=str, help='要提取的字幕名称')
     translate_from_audio_parser.add_argument('--audio', type=str, help='要提取的音轨名称')
-    translate_from_audio_parser.add_argument('--audio-format', type=str, default='mp3', help='提取音频的输出格式')
+    translate_from_audio_parser.add_argument('--audio-format', type=str, default='auto', help='提取音频的输出格式')
     translate_from_audio_parser.add_argument('--audio-sample-rate', type=int, default=16000, help='提取音频的采样率')
     translate_from_audio_parser.add_argument('--model-size', type=str, default="large-v2", help='模型大小')
     translate_from_audio_parser.add_argument('--device', type=str, default="cuda", help='运行设备')

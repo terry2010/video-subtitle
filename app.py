@@ -15,6 +15,8 @@ def parse_arguments():
     extract_parser.add_argument('--timeout', type=int, default=60, help='提取命令超时时间(秒)')
     extract_parser.add_argument('--subtitle', type=str, help='要提取的字幕名称')
     extract_parser.add_argument('--audio', type=str, help='要提取的音轨名称')
+    extract_parser.add_argument('--audio-format', type=str, default='auto', help='提取音频的输出格式')
+    extract_parser.add_argument('--audio-sample-rate', type=int, default=16000, help='提取音频的采样率')
 
     # 音频转字幕的子命令
     transcribe_parser = subparsers.add_parser('transcribe', help='将音频转为字幕')
@@ -43,30 +45,13 @@ if __name__ == "__main__":
     args = parse_arguments()
 
     if args.action == 'extract':
-        extract_audio_subtitle(args.input, args.timeout, args.subtitle, args.audio)
+        extract_audio_subtitle(args.input, args.timeout, args.subtitle, args.audio, args.audio_format, args.audio_sample_rate)
     elif args.action == 'transcribe':
         transcribe_audio_to_subtitle(args.audio_path, args.model_size, args.device)
     elif args.action == 'translate':
-        translate_subtitle(args.srt_file, args.src_lang, args.tgt_lang,"ass")
+        translate_subtitle(args.srt_file, args.src_lang, args.tgt_lang, "ass")
     elif args.action == 'translate_from_audio':
-
         srt_file_path, detected_language = transcribe_audio_to_subtitle(args.audio_path, args.model_size, args.device)
-        # 此处不再需要手动构造SRT文件名，因为已从函数获取了正确的路径
-        translate_subtitle(srt_file_path, detected_language, args.tgt_lang,"ass")
-
-
-        #
-        # # 先转录音频为字幕
-        # srt_file, detected_language = transcribe_audio_to_subtitle(args.audio_path, args.model_size, args.device)
-        #
-        # # 假设转录后的字幕文件名格式为 'audio_path_language.srt'
-        # # 这里需要根据实际输出的文件名规则调整
-        # base_name = os.path.splitext(os.path.basename(args.audio_path))[0]
-        # # language_detected = args.src_lang or "auto"  # 如果没有指定源语言，则自动检测
-        # srt_file_with_lang = f"{base_name}_{detected_language}.srt"
-        # # srt_file_with_lang = "test.mkv.ai.ja.srt"
-        # # language_detected = "ja"
-        # # 进行翻译
-        # translate_subtitle(srt_file_with_lang, detected_language, args.tgt_lang)
+        translate_subtitle(srt_file_path, detected_language, args.tgt_lang, "ass")
     else:
         print("未选择有效的操作，请使用 --help 查看可用操作。")

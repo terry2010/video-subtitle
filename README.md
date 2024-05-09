@@ -6,12 +6,16 @@ a video subtitle generator
 ``` 
 python app.py extract --input test.mov
 
+python app.py extract --input test.mov  --audio eng --audio-format mp3 --audio-sample-rate 16000
+
 ```
 
 仅将音频文件转换成字幕（假设你已经从视频中提取了音频或有单独的音频文件）:
 
 ``` 
 python app.py transcribe --audio-path test.mov
+
+
 
 ```
 

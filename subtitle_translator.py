@@ -2,6 +2,11 @@ import os
 import ctranslate2
 from transformers import AutoTokenizer
 import pysubs2
+from langdetect import detect
+
+
+def detect_language(text):
+    return detect(text)
 
 
 def load_subtitle_to_dict(subtitle_file_path):
@@ -26,6 +31,16 @@ def load_subtitle_to_dict(subtitle_file_path):
 def translate_subtitle(subtitle_file, src_lang, tgt_lang, output_format):
     model_path = os.path.join("models", "Ctranslate2", "facebook", "nllb-200-distilled-1.3B")
     translator = ctranslate2.Translator(model_path, device="cuda")
+
+    # 如果没有指定源语言或源语言为auto,则自动检测语言
+    if src_lang is None or src_lang == 'auto':
+        # 加载字幕文件到字典
+        subtitle_dict = load_subtitle_to_dict(subtitle_file)
+        # 取第一条字幕文本进行语言检测
+        text = list(subtitle_dict.values())[0]['text']
+        src_lang = detect_language(text)
+        print(f"Detected source language: {src_lang}")
+
     tokenizer = AutoTokenizer.from_pretrained(model_path, src_lang=src_lang)
 
     # 加载字幕文件到字典
@@ -36,8 +51,8 @@ def translate_subtitle(subtitle_file, src_lang, tgt_lang, output_format):
     subs = pysubs2.SSAFile()
 
     # 定义字幕样式
-    style_top = pysubs2.SSAStyle(fontsize=24)  # 上面一行字幕的样式，默认大小
-    style_bottom = pysubs2.SSAStyle(fontsize=8 , primarycolor=pysubs2.Color(255, 165, 0))  # 下面一行字幕的样式，三分之一大小，橘黄色
+    style_top = pysubs2.SSAStyle(fontsize=24)  # 上面一行字幕的样式,默认大小
+    style_bottom = pysubs2.SSAStyle(fontsize=8, primarycolor=pysubs2.Color(255, 165, 0))  # 下面一行字幕的样式,三分之一大小,橘黄色
 
     # 添加字幕样式到字幕文件中
     subs.styles["Default"] = style_top
@@ -45,14 +60,13 @@ def translate_subtitle(subtitle_file, src_lang, tgt_lang, output_format):
 
     style_with_border = pysubs2.SSAStyle(fontsize=24, borderstyle=1, outline=1,
                                          primarycolor=pysubs2.Color(255, 255, 255),
-                                         backcolor=pysubs2.Color(0, 0, 0))  # 白色文字，黑色边框
+                                         backcolor=pysubs2.Color(0, 0, 0))  # 白色文字,黑色边框
     style_bottom_with_border = pysubs2.SSAStyle(fontsize=8, borderstyle=1, outline=1,
                                                 primarycolor=pysubs2.Color(255, 165, 0),
-                                                backcolor=pysubs2.Color(0, 0, 0))  # 橘黄色文字，黑色边框
+                                                backcolor=pysubs2.Color(0, 0, 0))  # 橘黄色文字,黑色边框
     # 添加样式到字幕文件
     subs.styles["DefaultWithBorder"] = style_with_border
     subs.styles["BottomStyleWithBorder"] = style_bottom_with_border
-
 
     for seg_num, seg in subtitle_dict.items():
         source = tokenizer.convert_ids_to_tokens(tokenizer.encode(seg['text'].strip()))
@@ -63,20 +77,10 @@ def translate_subtitle(subtitle_file, src_lang, tgt_lang, output_format):
 
         event = pysubs2.SSAEvent(start=seg['start'], end=seg['end'])
         if output_format == "ass":
-            # event.text = f"{translation}\\N{{\\rBottomStyle}}{seg['text']}"  # 使用样式名称引用下面一行字幕的样式
             event.text = f"{translation}{{\\rDefaultWithBorder}}\\N{{\\rBottomStyleWithBorder}}{seg['text']}"
-
-            print(event.text)
         else:
             event.text = f"{translation}\n{seg['text']}"
         subs.append(event)
 
     subs.save(output_path, encoding="utf-8")
     print(f"翻译后的字幕已保存到: {output_path}")
-
-# 示例调用（在实际使用中，应确保此调用在适当的上下文中）
-# src_lang = 'auto'  # 如果模型支持自动检测
-# tgt_lang = 'zho_Hans'
-# subtitle_file = 'your_subtitle_file.srt'  # 支持 SRT 和 ASS 格式
-# output_format = 'ass'  # 可选 'srt' 或 'ass'
-# translate_subtitle(subtitle_file, src_lang, tgt_lang, output_format)

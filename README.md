@@ -22,7 +22,7 @@ python app.py transcribe --audio-path test_eng.mp3
 翻译已有字幕文件（假设你已经有了一个名为'subtitles.srt'的字幕文件需要从日语翻译成中文）:
 
 ``` 
-python app.py translate --srt-file test.ai.en.srt --src-lang en --tgt-lang zho_Hans
+python app.py translate --srt-file test_eng.mp3.ai.en.srt --src-lang en --tgt-lang zho_Hans
 
 ```
 

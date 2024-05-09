@@ -15,7 +15,7 @@ python app.py extract --input test.mov  --audio eng --audio-format mp3 --audio-s
 ``` 
 python app.py transcribe --audio-path test.mov
 
-
+python app.py transcribe --audio-path test_eng.mp3
 
 ```
 

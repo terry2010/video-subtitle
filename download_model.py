@@ -1,6 +1,6 @@
 from faster_whisper import WhisperModel
 from transformers import SeamlessM4TModel, SeamlessM4TConfig, AutoTokenizer, AutoModelForSeq2SeqLM
-
+import  ctranslate2
 import os
 import sys
 
@@ -40,7 +40,7 @@ os.makedirs(custom_model_dir, exist_ok=True)
 # tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=model_dir)
 # model = AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir=model_dir)
 
-model_list = ["facebook/nllb-200-distilled-1.3B","facebook/nllb-200-3.3B","michaelfeil/ct2fast-nllb-200-3.3B"]
+model_list = ["facebook/nllb-200-distilled-1.3B","facebook/nllb-200-3.3B"]
 
 for model_name in model_list:
     model_dir = os.path.join('models', model_name)
@@ -53,8 +53,6 @@ for model_name in model_list:
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir=model_dir)
 
 #ct2-transformers-converter --model facebook/nllb-200-3.3B --output_dir ~/tmp-ct2fast-nllb-200-3.3B --force --copy_files tokenizer.json README.md tokenizer_config.json generation_config.json special_tokens_map.json .gitattributes --quantization int8_float16 --trust_remote_code
-
-
 
 # 设置环境变量 WHISPER_MODELS_DIR 为自定义目录
 os.environ["WHISPER_MODELS_DIR"] = custom_model_dir

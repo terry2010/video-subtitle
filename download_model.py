@@ -40,7 +40,7 @@ os.makedirs(custom_model_dir, exist_ok=True)
 # tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=model_dir)
 # model = AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir=model_dir)
 
-model_list = ["facebook/nllb-200-distilled-1.3B","facebook/nllb-200-3.3B","KomorebiAI/nllb-200-3.3B-int8-ct2","michaelfeil/ct2fast-nllb-200-3.3B"]
+model_list = ["facebook/nllb-200-distilled-1.3B","facebook/nllb-200-3.3B","michaelfeil/ct2fast-nllb-200-3.3B"]
 
 for model_name in model_list:
     model_dir = os.path.join('models', model_name)

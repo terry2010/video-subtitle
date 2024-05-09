@@ -20,6 +20,8 @@ python app.py transcribe --audio-path test.mov
 python app.py transcribe --audio-path test_eng.mp3
 
 
+python app.py transcribe --audio-path test_jpn.eac3 --model-size large-v2
+
 python app.py transcribe --audio-path test_eng.mp3 --model-size large-v3
 
 python app.py transcribe --audio-path test_eng.mp3 --model-size small
@@ -42,6 +44,8 @@ python app.py translate_from_audio --audio-path test_eng.aac --model-size large-
 python app.py translate_from_audio --audio-path test_eng.mp3 --model-size small --device cuda --tgt-lang zho_Hans
 
 python app.py translate_from_audio --audio-path test.mov --model-size small --device cuda --src-lang en --tgt-lang zho_Hans
+
+python app.py translate_from_audio --audio-path test.mkv --model-size large-v2 --device cuda --src-lang ja --tgt-lang zho_Hans
 
 
 ```

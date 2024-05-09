@@ -5,7 +5,7 @@ import json
 from faster_whisper import WhisperModel
 
 
-def transcribe_audio(audio_path, model_size="large-v1", device="cuda", compute_type="int8"):
+def transcribe_audio(audio_path, language=None, model_size="large-v1", device="cuda", compute_type="int8"):
     audio_time_start = time.time()
 
     model = WhisperModel(model_size,
@@ -20,6 +20,7 @@ def transcribe_audio(audio_path, model_size="large-v1", device="cuda", compute_t
                                       vad_filter=True,
                                       vad_parameters=dict(min_silence_duration_ms=700),
                                       word_timestamps=False,
+                                      language=language
                                       )
     print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
 

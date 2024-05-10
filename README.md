@@ -9,6 +9,7 @@ a video subtitle generator
 python app.py extract --input test.mov
 
 python app.py extract --input test.mov  --audio eng --audio-format wav --audio-sample-rate 16000
+python app.py extract --input test.mkv  --audio eng  
 
 ```
 

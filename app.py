@@ -13,8 +13,8 @@ def parse_arguments():
     extract_parser = subparsers.add_parser('extract', help='提取音频和/或字幕')
     extract_parser.add_argument('--input', type=str, required=True, help='输入的视频文件路径')
     extract_parser.add_argument('--timeout', type=int, default=60, help='提取命令超时时间(秒)')
-    extract_parser.add_argument('--subtitle', type=str, help='要提取的字幕名称')
-    extract_parser.add_argument('--audio', type=str, help='要提取的音轨名称')
+    extract_parser.add_argument('--subtitle', type=str, default=None, help='要提取的字幕名称')
+    extract_parser.add_argument('--audio', type=str, default=None, help='要提取的音轨名称')
     extract_parser.add_argument('--audio-format', type=str, default='auto', help='提取音频的输出格式')
     extract_parser.add_argument('--audio-sample-rate', type=int, default=16000, help='提取音频的采样率')
 
@@ -55,35 +55,51 @@ if __name__ == "__main__":
     args = parse_arguments()
 
     if args.action == 'extract':
-        extract_audio_subtitle(args.input, args.timeout, args.subtitle, args.audio, args.audio_format,
+        extract_audio_subtitle(args.input,
+                               args.timeout,
+                               args.subtitle,
+                               args.audio,
+                               args.audio_format,
                                args.audio_sample_rate)
     elif args.action == 'transcribe':
-        src_path, srt_dict, detected_lang = transcribe_audio(args.audio_path, args.src_lang, args.model_size,
+        src_path, srt_dict, detected_lang = transcribe_audio(args.audio_path,
+                                                             args.src_lang,
+                                                             args.model_size,
                                                              args.device,
                                                              args.compute_type)
         print(f"src_path:{src_path},detected_lang:{detected_lang}")
     elif args.action == 'translate':
-        translate_subtitle(args.srt_file, args.src_lang, args.tgt_lang,
-                                                             args.device,
-                                                             args.compute_type)
+        translate_subtitle(args.srt_file,
+                           args.src_lang,
+                           args.tgt_lang,
+                           args.device,
+                           args.compute_type)
     elif args.action == 'translate_from_audio':
-        audio_path, srt_path = extract_audio_subtitle(args.audio_path, args.timeout, args.src_lang, args.audio,
+        audio_path, srt_path = extract_audio_subtitle(args.audio_path,
+                                                      args.timeout,
+                                                      args.src_lang, args.audio,
                                                       args.audio_format,
                                                       args.audio_sample_rate)
         if "" != srt_path:
             srt_file_path = srt_path
             detected_language = args.src_lang
         elif "" != audio_path:
-            srt_file_path, srt_dict, detected_language = transcribe_audio(audio_path, args.src_lang, args.model_size,
+            srt_file_path, srt_dict, detected_language = transcribe_audio(audio_path,
+                                                                          args.src_lang,
+                                                                          args.model_size,
                                                                           args.device,
                                                                           args.compute_type)
         else:
-            srt_file_path, srt_dict, detected_language = transcribe_audio(args.audio_path, args.src_lang,
-                                                                          args.model_size, args.device,
+            srt_file_path, srt_dict, detected_language = transcribe_audio(args.audio_path,
+                                                                          args.src_lang,
+                                                                          args.model_size,
+                                                                          args.device,
                                                                           args.compute_type)
 
-        translate_subtitle(srt_file_path, detected_language, args.tgt_lang,
-                                                             args.device,
-                                                             args.compute_type)
+        translate_subtitle(srt_file_path,
+                           detected_language,
+                           args.tgt_lang,
+                           args.device,
+                           args.compute_type)
     else:
         print("未选择有效的操作，请使用 --help 查看可用操作。")

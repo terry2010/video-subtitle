@@ -7,10 +7,10 @@ from utils import parse_audio_info, parse_subtitle_info, print_audio_subtitle_in
 
 
 def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_audio=None, audio_format='wav',
-                           audio_sample_rate=16000):
+                           audio_sample_rate=16000, print_info=False):
     if not shutil.which("ffmpeg"):
         print("请确保ffmpeg已安装")
-        return "", ""
+        return "", "", [], [], False
 
     input_dir = os.path.dirname(os.path.abspath(input_file))
     input_name = os.path.splitext(os.path.basename(input_file))[0]
@@ -18,7 +18,7 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
     output_audio = ""
     output_subtitle = ""
 
-    # 获取音轨和字幕信息，并按语言分组
+    # 获取音轨和字幕信息,并按语言分组
     command_info = ['ffprobe', '-v', 'quiet', '-print_format', 'json', '-show_streams', input_file]
     try:
         info_result = subprocess.run(command_info, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -34,6 +34,9 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
             tags = subtitle.get('tags', {})
             title = tags.get('title', '')
             grouped_subtitles[(language, title)].append(subtitle)
+
+        if print_info:
+            print_audio_subtitle_info(audio_list, grouped_subtitles)
 
         print("开始提取...")
 
@@ -59,7 +62,6 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
                         print("错误信息:", str(e))
             if not found_audio:
                 print("指定的音轨不存在。")
-                print_audio_subtitle_info(audio_list, grouped_subtitles)
 
         # 提取字幕
         if target_subtitle:
@@ -95,16 +97,16 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
 
             if not found_subtitle:
                 print("指定的字幕不存在。")
-                available_subtitles = [f"{lang}_{title}" if title else lang for (lang, title), subs in
-                                       grouped_subtitles.items() for sub in subs]
-                print("可用的字幕列表:", ", ".join(available_subtitles))
 
         print("提取完成")
-        return output_audio, output_subtitle
+        all_subtitles = [f"{lang}_{title}" if title else lang for (lang, title), subs in grouped_subtitles.items() for sub in subs]
+        all_audios = [audio['language'] for audio in audio_list]
+        success = True
+        return output_audio, output_subtitle, all_subtitles, all_audios, success
 
     except subprocess.CalledProcessError as e:
         print("错误:", e.stderr.decode())
-        return output_audio, output_subtitle
+        return output_audio, output_subtitle, [], [], False
 
 
 def get_audio_codec_by_extension(extension):

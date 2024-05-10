@@ -51,7 +51,24 @@ python app.py translate_from_audio --audio-path test.mkv --model-size large-v2 -
 
 ```
 
+测试样例
 
+``` 
+提取音频和字幕:
+
+python app.py extract --input test.mkv --timeout 120 --subtitle eng --audio jpn --audio-format mp3 --audio-sample-rate 16000 --print-info
+将音频转为字幕:
+
+python app.py transcribe --audio-path test_jpn.mp3 --src-lang ja --model-size base --device cuda --compute-type int8
+
+翻译字幕:
+
+python app.py translate --srt-file test_eng.srt --src-lang eng --tgt-lang zho_Hans --device cuda --compute-type int8
+
+直接从音频文件生成翻译后的字幕:
+
+python app.py translate_from_audio --audio-path test.mkv --timeout 120 --subtitle eng --audio jpn --audio-format wav --audio-sample-rate 16000 --model-size base --device cuda --compute-type int8 --src-lang eng --tgt-lang zho_Hans --print-info
+```
 
 
 

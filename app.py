@@ -31,6 +31,8 @@ def parse_arguments():
     translate_parser.add_argument('--srt-file', type=str, required=True, help='待翻译的字幕文件路径')
     translate_parser.add_argument('--src-lang', type=str, help='源语言代码')
     translate_parser.add_argument('--tgt-lang', type=str, required=True, help='目标语言代码')
+    translate_parser.add_argument('--device', type=str, default="cuda", help='运行设备')
+    translate_parser.add_argument('--compute-type', type=str, default="int8", help='显卡支持的计算类型')
 
     # 新增一步完成的子命令
     translate_from_audio_parser = subparsers.add_parser('translate_from_audio', help='直接从音频文件生成翻译后的字幕')
@@ -61,7 +63,9 @@ if __name__ == "__main__":
                                                              args.compute_type)
         print(f"src_path:{src_path},detected_lang:{detected_lang}")
     elif args.action == 'translate':
-        translate_subtitle(args.srt_file, args.src_lang, args.tgt_lang)
+        translate_subtitle(args.srt_file, args.src_lang, args.tgt_lang,
+                                                             args.device,
+                                                             args.compute_type)
     elif args.action == 'translate_from_audio':
         audio_path, srt_path = extract_audio_subtitle(args.audio_path, args.timeout, args.src_lang, args.audio,
                                                       args.audio_format,
@@ -78,6 +82,8 @@ if __name__ == "__main__":
                                                                           args.model_size, args.device,
                                                                           args.compute_type)
 
-        translate_subtitle(srt_file_path, detected_language, args.tgt_lang)
+        translate_subtitle(srt_file_path, detected_language, args.tgt_lang,
+                                                             args.device,
+                                                             args.compute_type)
     else:
         print("未选择有效的操作，请使用 --help 查看可用操作。")

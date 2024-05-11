@@ -35,7 +35,7 @@ def parse_arguments():
     translate_parser.add_argument('--device', type=str, default="cuda", help='运行设备')
     translate_parser.add_argument('--compute-type', type=str, default="int8", help='显卡支持的计算类型')
 
-    # 新增一步完成的子命令
+    # 一步完成从音频到字幕翻译的子命令
     translate_from_audio_parser = subparsers.add_parser('translate_from_audio', help='直接从音频文件生成翻译后的字幕')
     translate_from_audio_parser.add_argument('--audio-path', type=str, required=True, help='音频文件路径')
     translate_from_audio_parser.add_argument('--timeout', type=int, default=60, help='提取命令超时时间(秒)')

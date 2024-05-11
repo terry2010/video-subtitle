@@ -11,10 +11,10 @@ def parse_arguments():
 
     # 提取音频和字幕的子命令
     extract_parser = subparsers.add_parser('extract', help='提取音频和/或字幕')
-    extract_parser.add_argument('--input', type=str, required=True, help='输入的视频文件路径')
+    extract_parser.add_argument('--audio-path', type=str, required=True, help='输入的视频文件路径')
     extract_parser.add_argument('--timeout', type=int, default=60, help='提取命令超时时间(秒)')
     extract_parser.add_argument('--subtitle', type=str, default=None, help='要提取的字幕名称')
-    extract_parser.add_argument('--audio', type=str, default=None, help='要提取的音轨名称')
+    extract_parser.add_argument('--audio-lang', type=str, default=None, help='要提取的音轨名称')
     extract_parser.add_argument('--audio-format', type=str, default='auto', help='提取音频的输出格式')
     extract_parser.add_argument('--audio-sample-rate', type=int, default=16000, help='提取音频的采样率')
     extract_parser.add_argument('--print-info', action='store_true', help='打印所有字幕列表和音频列表')
@@ -40,7 +40,7 @@ def parse_arguments():
     translate_from_audio_parser.add_argument('--audio-path', type=str, required=True, help='音频文件路径')
     translate_from_audio_parser.add_argument('--timeout', type=int, default=60, help='提取命令超时时间(秒)')
     translate_from_audio_parser.add_argument('--subtitle', type=str, help='要提取的字幕名称')
-    translate_from_audio_parser.add_argument('--audio', type=str, help='要提取的音轨名称')
+    translate_from_audio_parser.add_argument('--audio-lang', type=str, help='要提取的音轨名称')
     translate_from_audio_parser.add_argument('--audio-format', type=str, default='auto', help='提取音频的输出格式')
     translate_from_audio_parser.add_argument('--audio-sample-rate', type=int, default=16000, help='提取音频的采样率')
     translate_from_audio_parser.add_argument('--model-size', type=str, default="large-v2", help='模型大小')
@@ -58,10 +58,10 @@ if __name__ == "__main__":
 
     if args.action == 'extract':
         output_audio, output_subtitle, all_subtitles, all_audios, success = extract_audio_subtitle(
-            args.input,
+            args.audio_path,
             args.timeout,
             args.subtitle,
-            args.audio,
+            args.audio_lang,
             args.audio_format,
             args.audio_sample_rate,
             args.print_info
@@ -87,7 +87,7 @@ if __name__ == "__main__":
             args.audio_path,
             args.timeout,
             args.subtitle,
-            args.audio,
+            args.audio_lang,
             args.audio_format,
             args.audio_sample_rate,
             args.print_info

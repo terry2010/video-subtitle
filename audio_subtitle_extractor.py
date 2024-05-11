@@ -6,20 +6,20 @@ from collections import defaultdict
 from utils import parse_audio_info, parse_subtitle_info, print_audio_subtitle_info
 
 
-def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_audio=None, audio_format='wav',
+def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_audio_lang=None, audio_format='wav',
                            audio_sample_rate=16000, print_info=False):
     if not shutil.which("ffmpeg"):
         print("请确保ffmpeg已安装")
         return "", "", [], [], False
 
-    input_dir = os.path.dirname(os.path.abspath(input_file))
-    input_name = os.path.splitext(os.path.basename(input_file))[0]
+    input_dir = os.path.dirname(os.path.abspath(audit_path))
+    input_name = os.path.splitext(os.path.basename(audit_path))[0]
 
     output_audio = ""
     output_subtitle = ""
 
     # 获取音轨和字幕信息,并按语言分组
-    command_info = ['ffprobe', '-v', 'quiet', '-print_format', 'json', '-show_streams', input_file]
+    command_info = ['ffprobe', '-v', 'quiet', '-print_format', 'json', '-show_streams', audit_path]
     try:
         info_result = subprocess.run(command_info, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         info = json.loads(info_result.stdout.decode())
@@ -41,15 +41,15 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
         print("开始提取...")
 
         # 提取音轨
-        if target_audio:
+        if target_audio_lang:
             found_audio = False
             for audio in audio_list:
                 audio_name = audio['language']
-                if audio_name == target_audio:
+                if audio_name == target_audio_lang:
                     found_audio = True
                     output_audio = os.path.join(input_dir,
                                                 f"{input_name}_{audio_name}.{audio_format if audio_format != 'auto' else audio['codec']}")
-                    command_extract_audio = ['ffmpeg', '-i', input_file, '-map', f"0:{audio['index']}",
+                    command_extract_audio = ['ffmpeg', '-i', audit_path, '-map', f"0:{audio['index']}",
                                              '-acodec', get_audio_codec_by_extension(
                             audio_format) if audio_format != 'auto' else 'copy',
                                              '-ar', str(audio_sample_rate), '-ac', '1', '-vn', '-nostats', '-loglevel',
@@ -74,7 +74,7 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
                     if len(subtitles) == 1:
                         subtitle = subtitles[0]
                         output_subtitle = os.path.join(input_dir, f"{input_name}_{subtitle_name}.srt")
-                        command_extract_subtitle = ['ffmpeg', '-i', input_file, '-map', f"0:{subtitle['index']}",
+                        command_extract_subtitle = ['ffmpeg', '-i', audit_path, '-map', f"0:{subtitle['index']}",
                                                     '-c', 'srt', '-nostats', '-loglevel', '0', '-y', output_subtitle]
                         try:
                             subprocess.run(command_extract_subtitle, check=True, timeout=timeout)
@@ -85,7 +85,7 @@ def extract_audio_subtitle(input_file, timeout, target_subtitle=None, target_aud
                     else:
                         for i, subtitle in enumerate(subtitles):
                             output_subtitle = os.path.join(input_dir, f"{input_name}_{subtitle_name}.srt")
-                            command_extract_subtitle = ['ffmpeg', '-i', input_file, '-map', f"0:{subtitle['index']}",
+                            command_extract_subtitle = ['ffmpeg', '-i', audit_path, '-map', f"0:{subtitle['index']}",
                                                         '-c', 'srt', '-nostats', '-loglevel', '0', '-y',
                                                         output_subtitle]
                             try:

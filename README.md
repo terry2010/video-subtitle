@@ -6,10 +6,10 @@ a video subtitle generator
 
 测试中发现， mp3 的识别率会低于wav和flac，aac等无损格式
 ``` 
-python app.py extract --input test.mov
+python app.py extract --audio-path test.mov
 
-python app.py extract --input test.mov  --audio eng --audio-format wav --audio-sample-rate 16000
-python app.py extract --input test.mkv  --audio eng  
+python app.py extract --audio-path test.mov  --audio-lang eng --audio-format wav --audio-sample-rate 16000
+python app.py extract --audio-path test.mkv  --audio-lang eng  
 
 ```
 
@@ -56,7 +56,7 @@ python app.py translate_from_audio --audio-path test.mkv --model-size large-v2 -
 ``` 
 提取音频和字幕:
 
-python app.py extract --input test.mkv --timeout 120 --subtitle eng --audio jpn --audio-format mp3 --audio-sample-rate 16000 --print-info
+python app.py extract --audio-path test.mkv --timeout 120 --subtitle eng --audio jpn --audio-format mp3 --audio-sample-rate 16000 --print-info
 将音频转为字幕:
 
 python app.py transcribe --audio-path test_jpn.mp3 --src-lang ja --model-size large-v2 --device cuda --compute-type int8
@@ -80,7 +80,7 @@ chatgpt4:
 
 ``` 
 你是一个顶级python专家，写一个python程序：app.py, 功能为：
-1. 启动方式：python app.py --input=test.mkv
+1. 启动方式：python app.py --audio-path test.mkv
 2. 启动后获取输入参数 input ， 并检测input的文件是否存在， 若是存在输出“找到文件”，若是不存在输出“文件不存在”
 ```
 

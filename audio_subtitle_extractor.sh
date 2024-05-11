@@ -51,6 +51,37 @@ if [ -n "$extract" ] && [ ! -d "$extract" ]; then
   exit 1
 fi
 
+# 等待文件复制或下载完成的函数
+wait_for_file_completion() {
+  local file="$1"
+  local initial_wait=60       # 初始等待时间(秒),等待文件下载或复制开始
+  local stable_time=600      # 文件没有被修改的时间(秒),默认为 10 分钟
+  local check_interval=60     # 检查文件修改时间的时间间隔(秒)
+
+  echo "等待文件复制或下载完成: $file"
+
+  # 初始等待,让文件下载或复制开始
+  sleep $initial_wait
+
+  local last_modified=$(stat -c %Y "$file")
+
+  while true; do
+    sleep $check_interval
+    local current_time=$(date +%s)
+    local current_modified=$(stat -c %Y "$file")
+
+    if [ $current_modified -eq $last_modified ]; then
+      local elapsed_time=$((current_time - last_modified))
+      if [ $elapsed_time -ge $stable_time ]; then
+        echo "文件在指定时间内没有被修改,认为文件复制或下载已完成: $file"
+        break
+      fi
+    else
+      last_modified=$current_modified
+    fi
+  done
+}
+
 # 提取字幕的函数
 extract_subtitles() {
   local folder_path="$1"
@@ -156,6 +187,9 @@ if [ -n "$watch" ]; then
 
     # 如果文件夹中没有 extract_subtitle_finished.lock 文件
     if [ ! -f "$folder/$locker_name" ]; then
+      # 等待文件复制或下载完成
+      wait_for_file_completion "$file"
+
       # 调用提取字幕的函数
       extract_subtitles "$folder"
 

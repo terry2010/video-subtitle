@@ -10,6 +10,7 @@ python app.py extract --audio-path test.mov
 
 python app.py extract --audio-path test.mov  --audio-lang eng --audio-format wav --audio-sample-rate 16000
 python app.py extract --audio-path test.mkv  --audio-lang eng  
+python app.py extract --audio-path test.mkv  --subtitle eng_BTM  
 
 ```
 

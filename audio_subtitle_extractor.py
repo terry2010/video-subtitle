@@ -60,9 +60,8 @@ def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_aud
                 if subtitle_name == target_subtitle:
                     found_subtitle = True
                     # 提取所有匹配的字幕
-                    if len(subtitles) == 1:
-                        subtitle = subtitles[0]
-                        output_subtitle = os.path.join(input_dir, f"{input_name}_{subtitle_name}.srt")
+                    for i, subtitle in enumerate(subtitles):
+                        output_subtitle = os.path.join(input_dir, f"{input_name}_{subtitle_name}_{i+1}.srt")
                         command_extract_subtitle = ['ffmpeg', '-i', audit_path, '-map', f"0:{subtitle['index']}",
                                                     '-c', 'srt', '-nostats', '-loglevel', '0', '-y', output_subtitle]
                         try:
@@ -71,18 +70,6 @@ def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_aud
                         except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
                             print(f"提取字幕失败: {output_subtitle}")
                             print("错误信息:", str(e))
-                    else:
-                        for i, subtitle in enumerate(subtitles):
-                            output_subtitle = os.path.join(input_dir, f"{input_name}_{subtitle_name}.srt")
-                            command_extract_subtitle = ['ffmpeg', '-i', audit_path, '-map', f"0:{subtitle['index']}",
-                                                        '-c', 'srt', '-nostats', '-loglevel', '0', '-y',
-                                                        output_subtitle]
-                            try:
-                                subprocess.run(command_extract_subtitle, check=True, timeout=timeout)
-                                print(f"已提取字幕: {output_subtitle}")
-                            except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
-                                print(f"提取字幕失败: {output_subtitle}")
-                                print("错误信息:", str(e))
 
             if not found_subtitle:
                 print("指定的字幕不存在。")

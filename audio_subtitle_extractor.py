@@ -47,19 +47,8 @@ def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_aud
                 audio_name = audio['language']
                 if audio_name == target_audio_lang:
                     found_audio = True
-                    output_audio = os.path.join(input_dir,
-                                                f"{input_name}_{audio_name}.{audio_format if audio_format != 'auto' else audio['codec']}")
-                    command_extract_audio = ['ffmpeg', '-i', audit_path, '-map', f"0:{audio['index']}",
-                                             '-acodec', get_audio_codec_by_extension(
-                            audio_format) if audio_format != 'auto' else 'copy',
-                                             '-ar', str(audio_sample_rate), '-ac', '1', '-vn', '-nostats', '-loglevel',
-                                             '0', '-y', output_audio]
-                    try:
-                        subprocess.run(command_extract_audio, check=True, timeout=timeout)
-                        print(f"已提取音轨: {output_audio}")
-                    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
-                        print(f"提取音轨失败: {output_audio}")
-                        print("错误信息:", str(e))
+                    output_audio = audit_path  # 直接返回传入的音频文件名
+                    print(f"使用原始音轨: {output_audio}")
             if not found_audio:
                 print("指定的音轨不存在。")
 

@@ -34,6 +34,7 @@ python app.py transcribe --audio-path test_eng.mp3 --model-size small
 
 ``` 
 python app.py translate --srt-file test_eng.srt --src-lang en --tgt-lang zho_Hans
+python app.py translate --srt-file test_jpn.eac3.ai.ja.srt --src-lang en --tgt-lang zho_Hans
 
 ```
 

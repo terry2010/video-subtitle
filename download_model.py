@@ -52,8 +52,12 @@ for model_name in model_list:
     tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=model_dir)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir=model_dir)
 
+# windows:
 #ct2-transformers-converter --model facebook/nllb-200-3.3B --output_dir ~/tmp-ct2fast-nllb-200-3.3B --force --copy_files tokenizer.json README.md tokenizer_config.json generation_config.json special_tokens_map.json .gitattributes --quantization int8_float16 --trust_remote_code
 #ct2-transformers-converter --model F:\ai\models\michaelfeil\ct2fast-nllb-200-3.3B --output_dir models/tmp-ct2fast-nllb-200-3.3B --force --copy_files tokenizer.json README.md tokenizer_config.json generation_config.json special_tokens_map.json .gitattributes --quantization int8_float16 --trust_remote_code
+
+# linux:
+# ct2-transformers-converter --model /workspace/model_repository/facebook/nllb-200-3.3B --output_dir models/ctranslate2/ct2fast-nllb-200-3.3B --force --copy_files tokenizer.json README.md tokenizer_config.json generation_config.json special_tokens_map.json .gitattributes --quantization int8_float16 --trust_remote_code
 
 # 设置环境变量 WHISPER_MODELS_DIR 为自定义目录
 os.environ["WHISPER_MODELS_DIR"] = custom_model_dir

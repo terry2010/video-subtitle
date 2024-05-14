@@ -6,7 +6,7 @@ from collections import defaultdict
 from utils import parse_audio_info, parse_subtitle_info, print_audio_subtitle_info
 
 
-def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_audio_lang=None, audio_format='wav',
+def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_audio_lang=None, audio_format=None,
                            audio_sample_rate=16000, print_info=False):
     if not shutil.which("ffmpeg"):
         print("请确保ffmpeg已安装")
@@ -47,8 +47,32 @@ def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_aud
                 audio_name = audio['language']
                 if audio_name == target_audio_lang:
                     found_audio = True
-                    output_audio = audit_path  # 直接返回传入的音频文件名
-                    print(f"使用原始音轨: {output_audio}")
+                    if is_audio_file(audit_path):
+                        if not audio_format or audio_format == audio['codec_name']:
+                            output_audio = audit_path  # 直接返回传入的音频文件名
+                            print(f"使用原始音轨: {output_audio}")
+                        else:
+                            output_audio = os.path.join(input_dir, f"{input_name}_{audio_name}.{audio_format}")
+                            audio_codec = get_audio_codec_by_extension(audio_format)
+                            command_extract_audio = ['ffmpeg', '-i', audit_path, '-map', f"0:{audio['index']}",
+                                                     '-acodec', audio_codec, '-ar', str(audio_sample_rate),
+                                                     '-nostats', '-loglevel', '0', '-y', output_audio]
+                            try:
+                                subprocess.run(command_extract_audio, check=True, timeout=timeout)
+                                print(f"已提取音轨并转码: {output_audio}")
+                            except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+                                print(f"提取音轨失败: {output_audio}")
+                                print("错误信息:", str(e))
+                    else:
+                        output_audio = os.path.join(input_dir, f"{input_name}_{audio_name}.{audio['codec_name']}")
+                        command_extract_audio = ['ffmpeg', '-i', audit_path, '-map', f"0:{audio['index']}",
+                                                 '-acodec', 'copy', '-nostats', '-loglevel', '0', '-y', output_audio]
+                        try:
+                            subprocess.run(command_extract_audio, check=True, timeout=timeout)
+                            print(f"已提取音轨: {output_audio}")
+                        except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+                            print(f"提取音轨失败: {output_audio}")
+                            print("错误信息:", str(e))
             if not found_audio:
                 print("指定的音轨不存在。")
 
@@ -83,6 +107,21 @@ def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_aud
     except subprocess.CalledProcessError as e:
         print("错误:", e.stderr.decode())
         return output_audio, output_subtitle, [], [], False
+
+
+
+def is_audio_file(file_path):
+    command_check = ['ffprobe', '-v', 'quiet', '-print_format', 'json', '-show_format', '-show_streams', file_path]
+    try:
+        check_result = subprocess.run(command_check, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        info = json.loads(check_result.stdout.decode())
+        for stream in info.get('streams', []):
+            if stream.get('codec_type') == 'audio':
+                return True
+    except subprocess.CalledProcessError:
+        pass
+    return False
+
 
 
 def get_audio_codec_by_extension(extension):

@@ -48,10 +48,15 @@ def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_aud
                 if audio_name == target_audio_lang:
                     found_audio = True
                     if is_audio_file(audit_path):
-                        if not audio_format or audio_format == audio['codec_name']:
+                        if not audio_format or audio_format == audio['codec']:
                             output_audio = audit_path  # 直接返回传入的音频文件名
                             print(f"使用原始音轨: {output_audio}")
                         else:
+                            print(f"{json.dumps(audio, ensure_ascii=False)} ,{audio_format}")
+
+                            if 'auto' == audio_format:
+                                audio_format = audio['codec']
+
                             output_audio = os.path.join(input_dir, f"{input_name}_{audio_name}.{audio_format}")
                             audio_codec = get_audio_codec_by_extension(audio_format)
                             command_extract_audio = ['ffmpeg', '-i', audit_path, '-map', f"0:{audio['index']}",
@@ -64,7 +69,7 @@ def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_aud
                                 print(f"提取音轨失败: {output_audio}")
                                 print("错误信息:", str(e))
                     else:
-                        output_audio = os.path.join(input_dir, f"{input_name}_{audio_name}.{audio['codec_name']}")
+                        output_audio = os.path.join(input_dir, f"{input_name}_{audio_name}.{audio['codec']}")
                         command_extract_audio = ['ffmpeg', '-i', audit_path, '-map', f"0:{audio['index']}",
                                                  '-acodec', 'copy', '-nostats', '-loglevel', '0', '-y', output_audio]
                         try:

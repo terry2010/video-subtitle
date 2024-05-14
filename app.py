@@ -54,68 +54,72 @@ def parse_arguments():
 
 
 if __name__ == "__main__":
-    args = parse_arguments()
+    try:
+        args = parse_arguments()
 
-    if args.action == 'extract':
-        output_audio, output_subtitle, all_subtitles, all_audios, success = extract_audio_subtitle(
-            args.audio_path,
-            args.timeout,
-            args.subtitle,
-            args.audio_lang,
-            args.audio_format,
-            args.audio_sample_rate,
-            args.print_info
-        )
-        if success:
-            print(f"所有字幕列表: {all_subtitles}")
-            print(f"所有音频列表: {all_audios}")
-    elif args.action == 'transcribe':
-        src_path, srt_dict, detected_lang = transcribe_audio(args.audio_path,
-                                                             args.src_lang,
-                                                             args.model_size,
-                                                             args.device,
-                                                             args.compute_type)
-        print(f"src_path:{src_path},detected_lang:{detected_lang}")
-    elif args.action == 'translate':
-        translate_subtitle(args.srt_file,
-                           args.src_lang,
-                           args.tgt_lang,
-                           args.device,
-                           args.compute_type)
-    elif args.action == 'translate_from_audio':
-        output_audio, output_subtitle, all_subtitles, all_audios, success = extract_audio_subtitle(
-            args.audio_path,
-            args.timeout,
-            args.subtitle,
-            args.audio_lang,
-            args.audio_format,
-            args.audio_sample_rate,
-            args.print_info
-        )
-        if success:
-            if output_subtitle:
-                srt_file_path = output_subtitle
-                detected_language = args.src_lang
-            elif output_audio:
-                srt_file_path, srt_dict, detected_language = transcribe_audio(output_audio,
-                                                                              args.src_lang,
-                                                                              args.model_size,
-                                                                              args.device,
-                                                                              args.compute_type)
-            else:
-                srt_file_path, srt_dict, detected_language = transcribe_audio(args.audio_path,
-                                                                              args.src_lang,
-                                                                              args.model_size,
-                                                                              args.device,
-                                                                              args.compute_type)
-
-            translate_subtitle(srt_file_path,
-                               detected_language,
+        if args.action == 'extract':
+            output_audio, output_subtitle, all_subtitles, all_audios, success = extract_audio_subtitle(
+                args.audio_path,
+                args.timeout,
+                args.subtitle,
+                args.audio_lang,
+                args.audio_format,
+                args.audio_sample_rate,
+                args.print_info
+            )
+            if success:
+                print(f"所有字幕列表: {all_subtitles}")
+                print(f"所有音频列表: {all_audios}")
+        elif args.action == 'transcribe':
+            src_path, srt_dict, detected_lang = transcribe_audio(args.audio_path,
+                                                                 args.src_lang,
+                                                                 args.model_size,
+                                                                 args.device,
+                                                                 args.compute_type)
+            print(f"src_path:{src_path},detected_lang:{detected_lang}")
+        elif args.action == 'translate':
+            translate_subtitle(args.srt_file,
+                               args.src_lang,
                                args.tgt_lang,
                                args.device,
                                args.compute_type)
+        elif args.action == 'translate_from_audio':
+            output_audio, output_subtitle, all_subtitles, all_audios, success = extract_audio_subtitle(
+                args.audio_path,
+                args.timeout,
+                args.subtitle,
+                args.audio_lang,
+                args.audio_format,
+                args.audio_sample_rate,
+                args.print_info
+            )
+            if success:
+                if output_subtitle:
+                    srt_file_path = output_subtitle
+                    detected_language = args.src_lang
+                elif output_audio:
+                    srt_file_path, srt_dict, detected_language = transcribe_audio(output_audio,
+                                                                                  args.src_lang,
+                                                                                  args.model_size,
+                                                                                  args.device,
+                                                                                  args.compute_type)
+                else:
+                    srt_file_path, srt_dict, detected_language = transcribe_audio(args.audio_path,
+                                                                                  args.src_lang,
+                                                                                  args.model_size,
+                                                                                  args.device,
+                                                                                  args.compute_type)
 
-            print(f"所有字幕列表: {all_subtitles}")
-            print(f"所有音频列表: {all_audios}")
-        else:
-            print("未选择有效的操作,请使用 --help 查看可用操作。")
+                translate_subtitle(srt_file_path,
+                                   detected_language,
+                                   args.tgt_lang,
+                                   args.device,
+                                   args.compute_type)
+
+                print(f"所有字幕列表: {all_subtitles}")
+                print(f"所有音频列表: {all_audios}")
+            else:
+                print("未选择有效的操作,请使用 --help 查看可用操作。")
+
+    except Exception as e:
+        print(f"未处理的异常: {str(e)}")

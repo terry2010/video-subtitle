@@ -43,6 +43,7 @@ def translate_subtitle(subtitle_file, src_lang, tgt_lang,model_name = "nllb-200-
         src_lang = detect_language(text)
         print(f"Detected source language: {src_lang}")
 
+    print(f"source language: {src_lang}")
     tokenizer = AutoTokenizer.from_pretrained(model_path, src_lang=src_lang)
 
     # 加载字幕文件到字典

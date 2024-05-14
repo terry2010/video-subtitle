@@ -35,8 +35,9 @@ python app.py transcribe --audio-path test_eng.mp3 --model-size small
 ``` 
 python app.py translate --srt-file test_eng.srt --src-lang en --tgt-lang zho_Hans
 python app.py translate --srt-file test_jpn.eac3.ai.ja.srt --src-lang ja --tgt-lang zho_Hans
-python app.py translate --srt-file test_jpn.eac3.ai.ja.srt --src-lang ja --tgt-lang zho_Hans --translate-model nllb-200-distilled-1.3B
+python app.py translate --srt-file test_jpn.eac3.ai.ja.srt --src-lang ja --tgt-lang zho_Hans --translate-model ct2fast-nllb-200-distilled-1.3B
 python app.py translate --srt-file test_jpn.eac3.ai.ja.srt --src-lang ja --tgt-lang zho_Hans --translate-model ct2fast-nllb-200-3.3B
+python app.py translate --srt-file test_jpn.eac3.ai.ja.srt --src-lang ja --tgt-lang zho_Hans --translate-model ct2fast-nllb-200-3.3B --compute-type float32
 
 ```
 

@@ -32,6 +32,7 @@ def parse_arguments():
     translate_parser.add_argument('--srt-file', type=str, required=True, help='待翻译的字幕文件路径')
     translate_parser.add_argument('--src-lang', type=str, help='源语言代码')
     translate_parser.add_argument('--tgt-lang', type=str, required=True, help='目标语言代码')
+    translate_parser.add_argument('--model-name', type=str, required=True, help='翻译模型名字')
     translate_parser.add_argument('--device', type=str, default="cuda", help='运行设备')
     translate_parser.add_argument('--compute-type', type=str, default="int8", help='显卡支持的计算类型')
 
@@ -48,6 +49,7 @@ def parse_arguments():
     translate_from_audio_parser.add_argument('--compute-type', type=str, default="int8", help='显卡支持的计算类型')
     translate_from_audio_parser.add_argument('--src-lang', type=str, help='源语言代码,默认自动检测')
     translate_from_audio_parser.add_argument('--tgt-lang', type=str, required=True, help='目标语言代码')
+    translate_from_audio_parser.add_argument('--model-name', type=str, required=True, help='翻译模型名字')
     translate_from_audio_parser.add_argument('--print-info', action='store_true', help='打印所有字幕列表和音频列表')
 
     return parser.parse_args()
@@ -81,6 +83,7 @@ if __name__ == "__main__":
             translate_subtitle(args.srt_file,
                                args.src_lang,
                                args.tgt_lang,
+                               args.model_name,
                                args.device,
                                args.compute_type)
         elif args.action == 'translate_from_audio':
@@ -113,6 +116,7 @@ if __name__ == "__main__":
                 translate_subtitle(srt_file_path,
                                    detected_language,
                                    args.tgt_lang,
+                                   args.model_name,
                                    args.device,
                                    args.compute_type)
 

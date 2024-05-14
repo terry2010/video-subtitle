@@ -29,8 +29,8 @@ def load_subtitle_to_dict(subtitle_file_path):
     return subtitle_dict
 
 
-def translate_subtitle(subtitle_file, src_lang, tgt_lang,device="cuda",compute_type="int8"):
-    model_path = os.path.join("models", "ctranslate2", "facebook", "nllb-200-distilled-1.3B")
+def translate_subtitle(subtitle_file, src_lang, tgt_lang,model_name = "nllb-200-distilled-1.3B", device="cuda",compute_type="int8"):
+    model_path = os.path.join("models", "ctranslate2", "facebook", model_name)
     translator = ctranslate2.Translator(model_path, device=device,compute_type=compute_type)
     audio_time_start = time.time()
 

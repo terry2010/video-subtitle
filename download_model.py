@@ -29,7 +29,7 @@ os.makedirs(custom_model_dir, exist_ok=True)
 
 
 # # 模型名称
-# model_name = "facebook/nllb-200-distilled-1.3B"
+# model_name = "facebook/ct2fast-nllb-200-distilled-1.3B"
 #
 # # 检查模型是否已经在models文件夹中
 # model_dir = os.path.join('models', model_name)
@@ -40,7 +40,7 @@ os.makedirs(custom_model_dir, exist_ok=True)
 # tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=model_dir)
 # model = AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir=model_dir)
 
-model_list = ["facebook/nllb-200-distilled-1.3B","facebook/nllb-200-3.3B"]
+model_list = ["facebook/ct2fast-nllb-200-distilled-1.3B","facebook/nllb-200-3.3B"]
 
 for model_name in model_list:
     model_dir = os.path.join('models', model_name)
@@ -58,7 +58,7 @@ for model_name in model_list:
 
 # linux:
 # ct2-transformers-converter --model /workspace/model_repository/facebook/nllb-200-3.3B --output_dir models/ctranslate2/ct2fast-nllb-200-3.3B --force --copy_files tokenizer.json README.md tokenizer_config.json generation_config.json special_tokens_map.json .gitattributes --quantization int8_float16 --trust_remote_code
-# ct2-transformers-converter --model /workspace/model_repository/facebook/nllb-200-distilled-1.3B  --output_dir models/ctranslate2/ct2fast-nllb-200-distilled-1.3B  --force --copy_files tokenizer.json README.md tokenizer_config.json generation_config.json special_tokens_map.json .gitattributes --quantization int8_float16 --trust_remote_code
+# ct2-transformers-converter --model /workspace/model_repository/facebook/ct2fast-nllb-200-distilled-1.3B  --output_dir models/ctranslate2/ct2fast-ct2fast-nllb-200-distilled-1.3B  --force --copy_files tokenizer.json README.md tokenizer_config.json generation_config.json special_tokens_map.json .gitattributes --quantization int8_float16 --trust_remote_code
 
 # 设置环境变量 WHISPER_MODELS_DIR 为自定义目录
 os.environ["WHISPER_MODELS_DIR"] = custom_model_dir

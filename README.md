@@ -10,7 +10,7 @@ python app.py extract --audio-path test.mov
 
 python app.py extract --audio-path test.mov  --audio-lang eng --audio-format wav --audio-sample-rate 16000
 python app.py extract --audio-path test.mkv  --audio-lang eng  
-python app.py extract --audio-path test.mkv  --subtitle eng_BTM  
+python app.py extract --audio-path test.mkv  --subtitle eng  
 
 ```
 
@@ -33,9 +33,10 @@ python app.py transcribe --audio-path test_eng.mp3 --model-size small
 翻译已有字幕文件（假设你已经有了一个名为'subtitles.srt'的字幕文件需要从日语翻译成中文）:
 
 ``` 
-python app.py translate --srt-file test_eng.srt --src-lang en --tgt-lang zho_Hans
+python app.py translate --srt-file test_eng.srt --src-lang en --tgt-lang zho_Hans --translate-model  nllb-200-distilled-1.3B
 python app.py translate --srt-file test_jpn.eac3.ai.ja.srt --src-lang ja --tgt-lang zho_Hans
 python app.py translate --srt-file test_jpn.eac3.ai.ja.srt --src-lang ja --tgt-lang zho_Hans --translate-model ct2fast-nllb-200-distilled-1.3B
+python app.py translate --srt-file test_jpn.eac3.ai.ja.srt --src-lang ja --tgt-lang zho_Hans --translate-model ct2fast-nllb-200-distilled-1.3B  --compute-type float32
 python app.py translate --srt-file test_jpn.eac3.ai.ja.srt --src-lang ja --tgt-lang zho_Hans --translate-model ct2fast-nllb-200-3.3B
 python app.py translate --srt-file test_jpn.eac3.ai.ja.srt --src-lang ja --tgt-lang zho_Hans --translate-model ct2fast-nllb-200-3.3B --compute-type float32
 

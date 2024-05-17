@@ -209,6 +209,8 @@ if [ -n "$watch" ]; then
 
       # 在文件夹中创建 extract_subtitle_finished.lock 文件
       touch "$folder/$locker_name"
+    else
+      echo "文件夹 $folder 已经处理过,跳过处理."
     fi
   done
 fi

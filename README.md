@@ -2,6 +2,7 @@
 a video subtitle generator
 
 
+
 # 提取视频中的所有字幕和音轨:
 
 测试中发现， mp3 的识别率会低于wav和flac，aac等无损格式

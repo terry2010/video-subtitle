@@ -87,10 +87,19 @@ extract_subtitles() {
   local file_path="$1"
 
   if [ -d "$file_path" ]; then
+    # 如果文件夹中存在 extract_subtitle_finished.lock 文件,则跳过处理
+    if [ -f "$file_path/$locker_name" ]; then
+      echo "文件夹 $file_path 已经处理过,跳过处理."
+      return
+    fi
+
     # 如果传入的是文件夹路径,遍历文件夹下的所有文件
     find "$file_path" -type f -print0 | while IFS= read -r -d '' file; do
       process_file "$file"
     done
+
+    # 处理完文件夹后,创建 extract_subtitle_finished.lock 文件
+    touch "$file_path/$locker_name"
   else
     # 如果传入的是单个文件路径,直接处理该文件
     process_file "$file_path"
@@ -206,9 +215,6 @@ if [ -n "$watch" ]; then
 
       # 调用提取字幕的函数
       extract_subtitles "$folder"
-
-      # 在文件夹中创建 extract_subtitle_finished.lock 文件
-      touch "$folder/$locker_name"
     else
       echo "文件夹 $folder 已经处理过,跳过处理."
     fi
@@ -224,9 +230,6 @@ if [ -n "$extract" ]; then
     # 检查是否已经提取过字幕
     if [ ! -f "$extract/$locker_name" ]; then
       extract_subtitles "$extract"
-
-      # 在文件夹中创建 extract_subtitle_finished.lock 文件
-      touch "$extract/$locker_name"
     else
       echo "字幕已经提取过,跳过提取."
     fi

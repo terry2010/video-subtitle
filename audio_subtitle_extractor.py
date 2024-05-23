@@ -46,7 +46,7 @@ def extract_audio_subtitle(audit_path,
         if print_info:
             print_audio_subtitle_info(audio_list, grouped_subtitles)
 
-        print("开始提取...")
+        print("\n开始提取...\n")
 
         # 提取音轨
         if target_audio_lang:

@@ -100,19 +100,16 @@ if __name__ == "__main__":
                 if output_subtitle:
                     srt_file_path = output_subtitle
                     detected_language = args.src_lang
-                elif output_audio:
-                    srt_file_path, srt_dict, detected_language = transcribe_audio(output_audio,
-                                                                                  args.src_lang,
-                                                                                  args.model_size,
-                                                                                  args.device,
-                                                                                  args.compute_type)
                 else:
-                    srt_file_path, srt_dict, detected_language = transcribe_audio(args.audio_path,
-                                                                                  args.src_lang,
-                                                                                  args.model_size,
-                                                                                  args.device,
-                                                                                  args.compute_type)
+                    # 如果没有提取到字幕,则使用音频生成字幕
+                    srt_file_path, srt_dict, detected_language = transcribe_audio(
+                        output_audio if output_audio else args.audio_path,
+                        args.src_lang,
+                        args.model_size,
+                        args.device,
+                        args.compute_type)
 
+                # 翻译生成的字幕文件
                 translate_subtitle(srt_file_path,
                                    detected_language,
                                    args.tgt_lang,

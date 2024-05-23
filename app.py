@@ -97,7 +97,7 @@ if __name__ == "__main__":
                 args.print_info
             )
             if success:
-                if output_subtitle:
+                if "" != output_subtitle:
                     srt_file_path = output_subtitle
                     detected_language = args.src_lang
                 elif output_audio:

@@ -74,6 +74,7 @@ def extract_audio_subtitle(audit_path,
                                 subprocess.run(command_extract_audio, check=True, timeout=timeout)
                                 print(f"已提取音轨并转码: {output_audio}")
                             except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+                                output_audio = ""
                                 print(f"提取音轨失败: {output_audio}")
                                 print("错误信息:", str(e))
                     else:
@@ -84,6 +85,7 @@ def extract_audio_subtitle(audit_path,
                             subprocess.run(command_extract_audio, check=True, timeout=timeout)
                             print(f"已提取音轨: {output_audio}")
                         except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+                            output_audio = ""
                             print(f"提取音轨失败: {output_audio}")
                             print("错误信息:", str(e))
             if not found_audio:
@@ -105,10 +107,12 @@ def extract_audio_subtitle(audit_path,
                             subprocess.run(command_extract_subtitle, check=True, timeout=timeout)
                             print(f"已提取字幕: {output_subtitle}")
                         except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+                            output_subtitle = ""
                             print(f"提取字幕失败: {output_subtitle}")
                             print("错误信息:", str(e))
 
             if not found_subtitle:
+                output_subtitle = ""
                 print("指定的字幕不存在。")
 
         print("提取完成")

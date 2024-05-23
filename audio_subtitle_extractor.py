@@ -6,8 +6,13 @@ from collections import defaultdict
 from utils import parse_audio_info, parse_subtitle_info, print_audio_subtitle_info
 
 
-def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_audio_lang=None, audio_format=None,
-                           audio_sample_rate=16000, print_info=False):
+def extract_audio_subtitle(audit_path,
+                           timeout,
+                           target_subtitle=None,
+                           target_audio_lang=None,
+                           audio_format=None,
+                           audio_sample_rate=16000,
+                           print_info=False):
     if not shutil.which("ffmpeg"):
         print("请确保ffmpeg已安装")
         return "", "", [], [], False
@@ -21,7 +26,10 @@ def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_aud
     # 获取音轨和字幕信息,并按语言分组
     command_info = ['ffprobe', '-v', 'quiet', '-print_format', 'json', '-show_streams', audit_path]
     try:
-        info_result = subprocess.run(command_info, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        info_result = subprocess.run(command_info,
+                                     check=True,
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE)
         info = json.loads(info_result.stdout.decode())
 
         audio_list = parse_audio_info(info)
@@ -106,8 +114,8 @@ def extract_audio_subtitle(audit_path, timeout, target_subtitle=None, target_aud
         print("提取完成")
         all_subtitles = [f"{lang}_{title}" if title else lang for (lang, title), subs in grouped_subtitles.items() for sub in subs]
         all_audios = [audio['language'] for audio in audio_list]
-        success = True
-        return output_audio, output_subtitle, all_subtitles, all_audios, success
+
+        return output_audio, output_subtitle, all_subtitles, all_audios, True
 
     except subprocess.CalledProcessError as e:
         print("错误:", e.stderr.decode())

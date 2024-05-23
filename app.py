@@ -70,8 +70,8 @@ if __name__ == "__main__":
                 args.print_info
             )
             if success:
-                print(f"所有字幕列表: {all_subtitles}")
-                print(f"所有音频列表: {all_audios}")
+                print(f"\n所有字幕列表: {all_subtitles}")
+                print(f"\n所有音频列表: {all_audios}")
         elif args.action == 'transcribe':
             src_path, srt_dict, detected_lang = transcribe_audio(args.audio_path,
                                                                  args.src_lang,
